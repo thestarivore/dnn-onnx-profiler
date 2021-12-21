@@ -1,0 +1,41 @@
+first install: Docker, Kubectl, Helm and Kind
+
+cat <<EOF | /home/starivore/kind create cluster --config=-
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  image: kindest/node:v1.20.0
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+  extraPortMappings:
+  - containerPort: 80
+    hostPort: 80
+    protocol: TCP
+  - containerPort: 443
+    hostPort: 443
+    protocol: TCP
+  - containerPort: 30300
+    hostPort: 30300
+    protocol: TCP
+EOF
+
+
+kubectl apply -f deploy.yaml
+
+helm repo add minio https://helm.min.io
+helm install minio minio/minio --set accessKey=minio --set secretKey=themanoutoftime --set service.type=NodePort --set service.nodePort=30300
+
+helm repo add kvaps https://kvaps.github.io/charts
+helm install nfs-server-provisioner kvaps/nfs-server-provisioner
+
+kubectl apply -f https://raw.githubusercontent.com/grycap/oscar/master/deploy/yaml/oscar-namespaces.yaml
+
+helm repo add grycap https://grycap.github.io/helm-charts/
+helm install --namespace=oscar oscar grycap/oscar --set authPass=themanoutoftime --set service.type=ClusterIP --set ingress.create=true --set volume.storageClassName=nfs --set minIO.endpoint=http://minio.default:9000 --set minIO.TLSVerify=false --set minIO.accessKey=minio --set minIO.secretKey=themanoutoftime
+
+arkade install openfaas --load-balancer --operator --set functionNamespace=oscar

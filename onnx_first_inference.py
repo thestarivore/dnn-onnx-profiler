@@ -6,6 +6,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 import numpy as np
 import argparse, sys
 import pickle
+import time
 
 '''
   Used to run at inference an ONNX DNN up to a specified layer. 
@@ -34,6 +35,7 @@ def main():
 # Run at inference the First Half of the Splitted Model
 def onnx_run_first_half(onnx_file, image_file, img_size_x, img_size_y, is_grayscale = False):
   #print(onnx_file + " , " + image_file + " , " + str(img_size_x) + " , " + str(img_size_y) + " , " + str(is_grayscale))
+  startTime = time.perf_counter()
 
   # load an image from file
   image = load_img(image_file, target_size=(img_size_x, img_size_y), grayscale=is_grayscale)
@@ -63,8 +65,11 @@ def onnx_run_first_half(onnx_file, image_file, img_size_x, img_size_y, is_graysc
                   outputs=[model_output]
                   )
   #print(result[0])
+  endTime = time.perf_counter()
+
   returnData = {
     "splitLayer": model_output,
+    "execTime1": endTime-startTime,
     "result": result[0],
   }
   print(returnData)

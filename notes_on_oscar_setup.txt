@@ -39,3 +39,75 @@ helm repo add grycap https://grycap.github.io/helm-charts/
 helm install --namespace=oscar oscar grycap/oscar --set authPass=themanoutoftime --set service.type=ClusterIP --set ingress.create=true --set volume.storageClassName=nfs --set minIO.endpoint=http://minio.default:9000 --set minIO.TLSVerify=false --set minIO.accessKey=minio --set minIO.secretKey=themanoutoftime
 
 arkade install openfaas --load-balancer --operator --set functionNamespace=oscar
+
+
+
+#oscar-cli commands:
+./oscar-cli cluster add kind https://localhost oscar --password-stdin 
+-config.yaml:
+    oscar:
+      kind:
+        endpoint: https://localhost
+        auth_user: oscar
+        auth_password: themanoutoftime
+        ssl_verify: false
+        memory: 256Mi
+        log_level: DEBUG
+    default: kind
+
+> ./oscar-cli service logs list onnx-test2
+JOB NAME				STATUS		CREATION TIME		START TIME		FINISH TIME
+786b1537-825f-4a4e-8464-e407befeb578	Succeeded	2022-01-02 20:04:11	2022-01-02 20:04:14	2022-01-02 20:04:15
+7dd62e74-6add-4e4d-b769-5e08b4345669	Succeeded	2022-01-03 23:16:48	2022-01-03 23:16:51	2022-01-03 23:16:52
+9ccbd10f-3ab1-464f-9602-d61ca61b2c22	Succeeded	2021-12-21 02:50:23	2021-12-21 02:55:10	2021-12-21 02:55:11
+b33b5b89-03a8-495c-aacf-58212e7ec1e2	Succeeded	2022-01-02 20:46:21	2022-01-02 20:46:24	2022-01-02 20:46:26
+c36c8728-f3af-4dea-8656-a236bc8268b3	Succeeded	2022-01-04 23:51:36	2022-01-04 23:51:39	2022-01-04 23:51:41
+6d8eebf8-5c09-47d9-88a1-f4ff93ae1bf7	Succeeded	2022-01-02 20:02:29	2022-01-02 20:02:32	2022-01-02 20:02:34
+
+>  ./oscar-cli service logs get onnx-test2 786b1537-825f-4a4e-8464-e407befeb578
+2022-01-02 19:04:14,765 - supervisor - INFO - Storage event found.
+2022-01-02 19:04:14,765 - supervisor - INFO - MINIO event created
+2022-01-02 19:04:14,765 - supervisor - INFO - Reading storage configuration
+2022-01-02 19:04:14,774 - supervisor - INFO - SUPERVISOR: Initializing Binary supervisor
+2022-01-02 19:04:15,170 - supervisor - INFO - Found 'MINIO' input provider
+2022-01-02 19:04:15,170 - supervisor - INFO - Downloading item from bucket 'onnx2' with key 'input/results.txt'
+2022-01-02 19:04:15,189 - supervisor - INFO - Successful download of file 'input/results.txt' from bucket 'onnx2' in path '/tmp/tmp81izea8t/results.txt'
+2022-01-02 19:04:15,189 - supervisor - INFO - INPUT_FILE_PATH variable set to '/tmp/tmp81izea8t/results.txt'
+2022-01-02 19:04:15,190 - supervisor - INFO - Script file found in '/oscar/config/script.sh'
+2022-01-02 19:04:15,560 - supervisor - INFO - Searching for files to upload in folder '/tmp/tmpcv7eyc8s'
+2022-01-02 19:04:15,560 - supervisor - INFO - Checking files for uploading to 'minio.default' on path: 'onnx2/output'
+2022-01-02 19:04:15,566 - supervisor - INFO - Uploading file 'output/output.txt' to bucket 'onnx2'
+2022-01-02 19:04:15,583 - supervisor - INFO - Creating response
+SCRIPT: onnx_second_inference.py. File available in /tmp/tmp81izea8t/results.txt
+
+
+#minio client comands:
+https://docs.min.io/docs/minio-client-complete-guide.html
+
+> ./mc ls local
+[2021-12-20 02:43:51 CET]     0B onnx/
+[2021-12-21 02:48:26 CET]     0B onnx2/
+[2021-12-13 02:49:03 CET]     0B plants/
+
+> ./mc cp results.txt local/onnx2/input/results.txt
+results.txt:                563 B / 563 B ┃▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓┃ 33.30 KiB/s 0s(base) 
+> ./mc ls local/onnx2/input
+[2022-01-06 20:30:23 CET]   563B results.txt
+
+> ./mc ls local/onnx2/output
+[2022-01-06 20:30:27 CET] 2.1KiB output.txt
+
+> ./mc cp local/onnx2/output/output.txt output.txt
+...nnx2/output/output.txt:  2.09 KiB / 2.09 KiB ┃▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓┃ 425.02 KiB/s 0s(base) 
+
+
+#Docker commands:
+sudo docker build .
+sudo docker build --no-cache .
+sudo docker ps
+
+sudo docker tag 59d915fd33c2 thestarivore/onnx-test2:latest
+sudo docker push thestarivore/onnx-test2:latest
+
+sudo docker run 96fc94690f08 python /opt/DownloadONNXSplitter2/onnx_second_inference.py --onnx_path=/opt/DownloadONNXSplitter2/SplittedModels --input_file=/opt/DownloadONNXSplitter2/TestData2/results.txt
+

@@ -11,7 +11,17 @@ import argparse, sys
 import time
 import json
 import os
+import csv
 from onnx_first_inference import onnx_run_first_half
+import matplotlib.pyplot as plt
+import pandas as pd
+
+'''
+Examples:
+> python onnx_manager.py --operation run --split_layer sequential/dense_1/MatMul:0 --onnx_path LENET_SplittedModels/ --image_file=images/mnist_test.jpg --image_size_x=32 --image_size_y=32 --image_is_grayscale=True
+> python onnx_manager.py --operation run_all --onnx_file lenet.onnx --onnx_path LENET_SplittedModels/ --image_file=images/mnist_test.jpg --image_size_x=32 --image_size_y=32 --image_is_grayscale=True
+
+'''
 
 '''
   Manages operations on ONNX DNN Models such as layer visualizzation and splitting.
@@ -20,7 +30,7 @@ from onnx_first_inference import onnx_run_first_half
   -h, --help            show this help message and exit
   --operation OPERATION
                         Select the operation to be performed on the ONNX Model
-                        (list_layers | print_model | split_model | split_model_all | run)
+                        (list_layers | print_model | split_model | split_model_all | run | run_all | plot_results)
   --onnx_file ONNX_FILE
                         Select the ONNX File
   --split_layer SPLIT_LAYER
@@ -36,7 +46,7 @@ from onnx_first_inference import onnx_run_first_half
 def main():
     parser=argparse.ArgumentParser()
 
-    parser.add_argument('--operation', help='Select the operation to be performed on the ONNX Model (list_layers | print_model | split_model | split_model_all)')
+    parser.add_argument('--operation', help='Select the operation to be performed on the ONNX Model (list_layers | print_model | split_model | split_model_all | run | run_all | plot_results)')
     parser.add_argument('--onnx_file', help='Select the ONNX File')
     parser.add_argument('--split_layer', help='Select the layer where the slit must take place on the ONNX Model')
     parser.add_argument('--onnx_path', help='Select the path were all the Splitted ONNX Models are stored')
@@ -44,6 +54,7 @@ def main():
     parser.add_argument('--image_size_x', help='Select the Image Size X')
     parser.add_argument('--image_size_y', help='Select the Image Size Y')
     parser.add_argument('--image_is_grayscale', help='Indicate if the Image is in grayscale')
+    parser.add_argument('--results_file', help='Select the Results File(.csv)')
     args=parser.parse_args()
     print ("Operation: " + args.operation)
 
@@ -57,7 +68,10 @@ def main():
         onnx_model_split_all(args.onnx_file)
     elif args.operation == "run":
         onnx_run_complete(args.onnx_path, args.split_layer, args.image_file, int(args.image_size_x), int(args.image_size_y), bool(args.image_is_grayscale))
-
+    elif args.operation == "run_all":
+        onnx_run_all_complete(args.onnx_file, args.onnx_path, args.image_file, int(args.image_size_x), int(args.image_size_y), bool(args.image_is_grayscale))
+    elif args.operation == "plot_results":
+        plot_results(args.results_file)
 
 def onnx_list_model_layers(onnx_file):
   model_onnx = load_onnx_model(onnx_file)
@@ -146,12 +160,12 @@ def onnx_run_complete(onnx_path, split_layer, image_file, img_size_x, img_size_y
   #print(result1)
 
   #Clear the Jobs in the OSCAR Cloud before launching a new Job
-  os.system("./oscar-cli service logs remove onnx-test3 --all")
+  os.system("./oscar-cli service logs remove onnx-test4 --all")
   
   #Run at Inference the Second part of the ONNX DNN Model 
   print("\n ###Start the 2nd Inference Execution on Cloud (OSCAR)\n")
-  outputStrBefore = os.system("./mc ls local/onnx3/output")
-  res = os.system("./mc cp results.txt local/onnx3/input/results.txt")
+  outputStrBefore = os.system("./mc ls local/onnx4/output")
+  res = os.system("./mc cp results.txt local/onnx4/input/results.txt")
   
   #Check when is the Cloud execution terminated on OSCAR
   execFinished = False
@@ -159,12 +173,12 @@ def onnx_run_complete(onnx_path, split_layer, image_file, img_size_x, img_size_y
   while not execFinished:
     time.sleep(0.1)
     print(".")
-    outputStrAfter = os.system("./mc ls local/onnx3/output")
+    outputStrAfter = os.system("./mc ls local/onnx4/output")
     if outputStrBefore == outputStrAfter:
       execFinished = True
   
   #Get the result from the MinIO Bucket
-  os.system("./mc cp local/onnx3/output/output.txt output.json")
+  os.system("./mc cp local/onnx4/output/output.txt output.json")
   # Opening JSON file
   f = open('output.json')
   # Returns JSON object as a dictionary
@@ -180,7 +194,7 @@ def onnx_run_complete(onnx_path, split_layer, image_file, img_size_x, img_size_y
   ret = ""
   succeeded = False
   while ret == "" or not succeeded:
-    ret = os.popen("./oscar-cli service logs list onnx-test3").read()
+    ret = os.popen("./oscar-cli service logs list onnx-test4").read()
     print(">" + ret)
     if not ret == "":
       resLines = ret.split("\n",2)
@@ -196,7 +210,7 @@ def onnx_run_complete(onnx_path, split_layer, image_file, img_size_x, img_size_y
   print("jobName: " + jobName + "\n")
 
   # Get the Logs of the Job run on OSCAR
-  ret = os.popen("./oscar-cli service logs get onnx-test3 " + jobName).read()
+  ret = os.popen("./oscar-cli service logs get onnx-test4 " + jobName).read()
   print(">" + ret)
   firstTime = None
   secodTime = None
@@ -213,6 +227,88 @@ def onnx_run_complete(onnx_path, split_layer, image_file, img_size_x, img_size_y
   print("\n ###execTime1: " + str(data["execTime1"]) + "sec")
   print("\n ###execTime2: " + str(data["execTime2"]) + "sec")
   print("\n ###execTime3: " + str(execTime3) + "sec")
+  return data["execTime1"], data["execTime2"], execTime3
+
+def onnx_run_all_complete(onnx_file, onnx_path, image_file, img_size_x, img_size_y, is_grayscale = False):
+  #Load the Onnx Model
+  model_onnx = load_onnx_model(onnx_file)
+
+  #Open an cvs file to save the results
+  with open('time_table.csv', 'w', newline='') as csvfile:
+    fieldnames = ['SplitLayer', 'Time1', 'Time2', 'Time3']
+    cvswriter = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    cvswriter.writeheader()
+
+    #Make a split for every layer in the model
+    ln = 0
+    for layer in enumerate_model_node_outputs(model_onnx):
+      #Ignore the last layer
+      if layer != list(enumerate_model_node_outputs(model_onnx))[-1]:
+        splitLayer = layer.replace("/", '-').replace(":", '_')
+        print("Splitting at layer: " + splitLayer)
+
+        # Make a complete Inference Run of the whole model by splitting at this particular layer
+        print("Run..")
+        t1, t2, t3 = onnx_run_complete(onnx_path, splitLayer, image_file, img_size_x, img_size_y, is_grayscale)
+        print("Finished inference after splitting at layer: " + splitLayer)
+        cvswriter.writerow({'SplitLayer':splitLayer, "Time1":t1, "Time2":t2, "Time3":t3})
+        print("Saved results..")
+
+def plot_results(results_file):
+  N = 0
+  xTicks = []
+  t1 = []
+  t2 = []
+  t3 = []
+  data = []
+  data2 = []
+  with open(results_file, 'r') as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=',') 
+    for row in csv_reader:
+      if not N == 0:
+        print(f'\t{row[0]},  {row[1]}, {row[2]}, {row[3]}.')
+        xTicks.append(row[0])
+        t1.append(row[1])
+        t2.append(row[2])
+        t3.append(row[3])
+        data.append([np.float(row[1]),np.float(row[3])])
+        data2.append([np.float(row[1]),np.float(row[2])])
+      N += 1
+
+  print(data)
+
+  print("Plot the first graph where we consider also the cluster execution time..")
+  # Dummy dataframe
+  df = pd.DataFrame(data=data, columns=['T1', 'T3'])
+
+  # Plot a stacked barchart
+  ax = df.plot.bar(stacked=True)
+
+  # Place the legend
+  ax.legend(bbox_to_anchor=(1.1, 1.05))
+  plt.xticks(rotation=60)
+  #plt.ylim(0, 100)
+  plt.title('Execution time by layer divided between Edge and Cloud')
+  plt.xlabel('Layer')
+  plt.ylabel('Time (sec)')
+  plt.show()
+
+  print("Plot the second graph where we don't consider the cluster execution time..")
+  # Dummy dataframe
+  df = pd.DataFrame(data=data2, columns=['T1', 'T2'])
+
+  # Plot a stacked barchart
+  ax = df.plot.bar(stacked=True)
+
+  # Place the legend
+  ax.legend(bbox_to_anchor=(1.1, 1.05))
+  plt.xticks(rotation=60)
+  #plt.ylim(0, 100)
+  plt.title('Execution time by layer divided between Edge and Cloud')
+  plt.xlabel('Layer')
+  plt.ylabel('Time (sec)')
+  plt.show()
+   
 
 if __name__ == "__main__":
     main()

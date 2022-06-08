@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<mapping>
+	<map>
+		<framework name="mobilenetv2_1.00_160_input" output_port_id="mobilenetv2_1.00_160_input" />
+		<IR name="mobilenetv2_1.00_160_input" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/Conv1/Conv2D__6:0" output_port_id="sequential/mobilenetv2_1.00_160/Conv1/Conv2D__6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/Conv1/Conv2D__6:0" output_port_id="2" />
+	</map>
+</mapping>

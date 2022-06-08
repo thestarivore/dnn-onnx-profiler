@@ -1,0 +1,119 @@
+<?xml version="1.0" ?>
+<net name="tf2onnx" version="11">
+	<layers>
+		<layer id="0" name="mobilenetv2_1.00_160_input" type="Parameter" version="opset1">
+			<data shape="?,160,160,3" element_type="f32"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="mobilenetv2_1.00_160_input"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="mobilenetv2_1.00_160_input">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>160</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="1" name="Constant_132" type="Const" version="opset1">
+			<data element_type="i64" shape="4" offset="0" size="32"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Constant_132"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="I64">
+					<dim>4</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="2" name="sequential/mobilenetv2_1.00_160/Conv1/Conv2D__6:0" type="Transpose" version="opset1">
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/Conv1/Conv2D__6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>160</dim>
+					<dim>3</dim>
+				</port>
+				<port id="1" precision="I64">
+					<dim>4</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/Conv1/Conv2D__6:0">
+					<dim>-1</dim>
+					<dim>3</dim>
+					<dim>160</dim>
+					<dim>160</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="3" name="sequential/mobilenetv2_1.00_160/Conv1/Conv2D__6:0/sink_port_0" type="Result" version="opset1">
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/Conv1/Conv2D__6:0/sink_port_0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>3</dim>
+					<dim>160</dim>
+					<dim>160</dim>
+				</port>
+			</input>
+		</layer>
+	</layers>
+	<edges>
+		<edge from-layer="0" from-port="0" to-layer="2" to-port="0"/>
+		<edge from-layer="1" from-port="0" to-layer="2" to-port="1"/>
+		<edge from-layer="2" from-port="2" to-layer="3" to-port="0"/>
+	</edges>
+	<meta_data>
+		<MO_version value="2022.1.0-7019-cdb9bec7210-releases/2022/1"/>
+		<Runtime_version value="2022.1.0-7019-cdb9bec7210-releases/2022/1"/>
+		<legacy_path value="False"/>
+		<cli_parameters>
+			<caffe_parser_path value="DIR"/>
+			<compress_fp16 value="False"/>
+			<data_type value="FP32"/>
+			<disable_nhwc_to_nchw value="False"/>
+			<disable_omitting_optional value="False"/>
+			<disable_resnet_optimization value="False"/>
+			<disable_weights_compression value="False"/>
+			<enable_concat_optimization value="False"/>
+			<enable_flattening_nested_params value="False"/>
+			<enable_ssd_gluoncv value="False"/>
+			<extensions value="DIR"/>
+			<framework value="onnx"/>
+			<freeze_placeholder_with_value value="{}"/>
+			<input_model value="DIR/first_half.onnx"/>
+			<input_model_is_text value="False"/>
+			<k value="DIR/CustomLayersMapping.xml"/>
+			<layout value="()"/>
+			<layout_values value="{}"/>
+			<legacy_mxnet_model value="False"/>
+			<log_level value="ERROR"/>
+			<mean_scale_values value="{}"/>
+			<mean_values value="()"/>
+			<model_name value="first_half"/>
+			<output_dir value="DIR"/>
+			<placeholder_data_types value="{}"/>
+			<progress value="False"/>
+			<remove_memory value="False"/>
+			<remove_output_softmax value="False"/>
+			<reverse_input_channels value="False"/>
+			<save_params_from_nd value="False"/>
+			<scale_values value="()"/>
+			<silent value="False"/>
+			<source_layout value="()"/>
+			<static_shape value="False"/>
+			<stream_output value="False"/>
+			<target_layout value="()"/>
+			<transform value=""/>
+			<use_legacy_frontend value="False"/>
+			<use_new_frontend value="False"/>
+			<unset unset_cli_parameters="batch, counts, disable_fusing, finegrain_fusing, input, input_checkpoint, input_meta_graph, input_proto, input_shape, input_symbol, mean_file, mean_file_offsets, nd_prefix_name, output, placeholder_shapes, pretrained_model_name, saved_model_dir, saved_model_tags, scale, tensorboard_logdir, tensorflow_custom_layer_libraries, tensorflow_custom_operations_config_update, tensorflow_object_detection_api_pipeline_config, tensorflow_use_custom_operations_config, transformations_config"/>
+		</cli_parameters>
+	</meta_data>
+</net>

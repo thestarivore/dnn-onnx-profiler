@@ -1,0 +1,5706 @@
+<?xml version="1.0" ?>
+<net name="Extracted from {tf2onnx}" version="11">
+	<layers>
+		<layer id="0" name="sequential/mobilenetv2_1.00_160/Conv1/Conv2D__6:0" type="Parameter" version="opset1">
+			<data shape="?,3,160,160" element_type="f32"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/Conv1/Conv2D__6:0"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/Conv1/Conv2D__6:0">
+					<dim>-1</dim>
+					<dim>3</dim>
+					<dim>160</dim>
+					<dim>160</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="1" name="sequential/mobilenetv2_1.00_160/Conv1/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="32, 3, 3, 3" offset="0" size="3456"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/Conv1/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/Conv1/Conv2D_weights_fused_bn">
+					<dim>32</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="2" name="Convolution_132" type="Convolution" version="opset1">
+			<data strides="2, 2" dilations="1, 1" pads_begin="0, 0" pads_end="1, 1" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_132"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>3</dim>
+					<dim>160</dim>
+					<dim>160</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>32</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="3" name="Reshape_152" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 32, 1, 1" offset="3456" size="128"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="4" name="sequential/mobilenetv2_1.00_160/bn_Conv1/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_151, Reshape_152, sequential/mobilenetv2_1.00_160/bn_Conv1/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/bn_Conv1/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="5" name="sequential/mobilenetv2_1.00_160/Conv1_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_180, sequential/mobilenetv2_1.00_160/Conv1_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/Conv1_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="6" name="Reshape_189" type="Const" version="opset1">
+			<data element_type="f32" shape="32, 1, 1, 3, 3" offset="3584" size="1152"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="7" name="GroupConvolution_255" type="GroupConvolution" version="opset1">
+			<data strides="1, 1" pads_begin="1, 1" pads_end="1, 1" dilations="1, 1" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="GroupConvolution_255, Reshape_189"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="8" name="Reshape_275" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 32, 1, 1" offset="4736" size="128"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="9" name="sequential/mobilenetv2_1.00_160/expanded_conv_depthwise_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_274, Reshape_275, sequential/mobilenetv2_1.00_160/expanded_conv_depthwise_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/expanded_conv_depthwise_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="10" name="sequential/mobilenetv2_1.00_160/expanded_conv_depthwise_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_303, sequential/mobilenetv2_1.00_160/expanded_conv_depthwise_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/expanded_conv_depthwise_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="11" name="sequential/mobilenetv2_1.00_160/expanded_conv_project/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="16, 32, 1, 1" offset="4864" size="2048"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/expanded_conv_project/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/expanded_conv_project/Conv2D_weights_fused_bn">
+					<dim>16</dim>
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="12" name="Convolution_305" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_305"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>16</dim>
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>16</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="13" name="Reshape_325" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 16, 1, 1" offset="6912" size="64"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>16</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="14" name="sequential/mobilenetv2_1.00_160/expanded_conv_project_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_324, Reshape_325, sequential/mobilenetv2_1.00_160/expanded_conv_project_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>16</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>16</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/expanded_conv_project_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>16</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="15" name="Multiply_8546" type="Const" version="opset1">
+			<data element_type="f32" shape="96, 16, 1, 1" offset="6976" size="6144"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>96</dim>
+					<dim>16</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="16" name="Multiply_8490" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_1_expand/Conv2D:0, sequential/mobilenetv2_1.00_160/block_1_expand_BN/FusedBatchNormV3/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_1_expand_BN/FusedBatchNormV3/ReadVariableOp_1:0, sequential/mobilenetv2_1.00_160/block_1_expand_BN/FusedBatchNormV3:0, sequential/mobilenetv2_1.00_160/block_1_expand_BN/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_1_expand_BN/ReadVariableOp_1:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>16</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>96</dim>
+					<dim>16</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="17" name="Constant_8495" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 96, 1, 1" offset="13120" size="384"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="18" name="sequential/mobilenetv2_1.00_160/block_1_expand_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_1_expand_BN/FusedBatchNormV3/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_1_expand_BN/FusedBatchNormV3/ReadVariableOp_1:0, sequential/mobilenetv2_1.00_160/block_1_expand_BN/FusedBatchNormV3:0, sequential/mobilenetv2_1.00_160/block_1_expand_BN/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_1_expand_BN/ReadVariableOp_1:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_1_expand_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="19" name="sequential/mobilenetv2_1.00_160/block_1_expand_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_356, sequential/mobilenetv2_1.00_160/block_1_expand_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_1_expand_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="20" name="Reshape_369" type="Const" version="opset1">
+			<data element_type="f32" shape="96, 1, 1, 3, 3" offset="13504" size="3456"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="21" name="GroupConvolution_435" type="GroupConvolution" version="opset1">
+			<data strides="2, 2" pads_begin="0, 0" pads_end="1, 1" dilations="1, 1" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="GroupConvolution_435, Reshape_369, sequential/mobilenetv2_1.00_160/block_1_pad/Pad:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>80</dim>
+					<dim>80</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="22" name="Reshape_455" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 96, 1, 1" offset="16960" size="384"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="23" name="sequential/mobilenetv2_1.00_160/block_1_depthwise_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_454, Reshape_455, sequential/mobilenetv2_1.00_160/block_1_depthwise_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_1_depthwise_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="24" name="sequential/mobilenetv2_1.00_160/block_1_depthwise_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_483, sequential/mobilenetv2_1.00_160/block_1_depthwise_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_1_depthwise_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="25" name="sequential/mobilenetv2_1.00_160/block_1_project/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="24, 96, 1, 1" offset="17344" size="9216"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_1_project/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_1_project/Conv2D_weights_fused_bn">
+					<dim>24</dim>
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="26" name="Convolution_485" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_485"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>24</dim>
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>24</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="27" name="Reshape_505" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 24, 1, 1" offset="26560" size="96"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>24</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="28" name="sequential/mobilenetv2_1.00_160/block_1_project_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_504, Reshape_505, sequential/mobilenetv2_1.00_160/block_1_project_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>24</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>24</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_1_project_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>24</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="29" name="Multiply_8555" type="Const" version="opset1">
+			<data element_type="f32" shape="144, 24, 1, 1" offset="26656" size="13824"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>144</dim>
+					<dim>24</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="30" name="Multiply_8497" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_2_expand/Conv2D:0, sequential/mobilenetv2_1.00_160/block_2_expand_BN/FusedBatchNormV3/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_2_expand_BN/FusedBatchNormV3/ReadVariableOp_1:0, sequential/mobilenetv2_1.00_160/block_2_expand_BN/FusedBatchNormV3:0, sequential/mobilenetv2_1.00_160/block_2_expand_BN/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_2_expand_BN/ReadVariableOp_1:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>24</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>144</dim>
+					<dim>24</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="31" name="Constant_8502" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 144, 1, 1" offset="40480" size="576"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>144</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="32" name="sequential/mobilenetv2_1.00_160/block_2_expand_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_2_expand_BN/FusedBatchNormV3/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_2_expand_BN/FusedBatchNormV3/ReadVariableOp_1:0, sequential/mobilenetv2_1.00_160/block_2_expand_BN/FusedBatchNormV3:0, sequential/mobilenetv2_1.00_160/block_2_expand_BN/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_2_expand_BN/ReadVariableOp_1:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>144</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_2_expand_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="33" name="sequential/mobilenetv2_1.00_160/block_2_expand_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_536, sequential/mobilenetv2_1.00_160/block_2_expand_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_2_expand_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="34" name="Reshape_545" type="Const" version="opset1">
+			<data element_type="f32" shape="144, 1, 1, 3, 3" offset="41056" size="5184"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>144</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="35" name="GroupConvolution_611" type="GroupConvolution" version="opset1">
+			<data strides="1, 1" pads_begin="1, 1" pads_end="1, 1" dilations="1, 1" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="GroupConvolution_611, Reshape_545"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>144</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="36" name="Reshape_631" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 144, 1, 1" offset="46240" size="576"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>144</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="37" name="sequential/mobilenetv2_1.00_160/block_2_depthwise_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_630, Reshape_631, sequential/mobilenetv2_1.00_160/block_2_depthwise_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>144</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_2_depthwise_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="38" name="sequential/mobilenetv2_1.00_160/block_2_depthwise_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_659, sequential/mobilenetv2_1.00_160/block_2_depthwise_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_2_depthwise_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="39" name="sequential/mobilenetv2_1.00_160/block_2_project/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="24, 144, 1, 1" offset="46816" size="13824"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_2_project/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_2_project/Conv2D_weights_fused_bn">
+					<dim>24</dim>
+					<dim>144</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="40" name="Convolution_661" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_661"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>24</dim>
+					<dim>144</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>24</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="41" name="Reshape_681" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 24, 1, 1" offset="60640" size="96"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>24</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="42" name="sequential/mobilenetv2_1.00_160/block_2_project_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_680, Reshape_681, sequential/mobilenetv2_1.00_160/block_2_project_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>24</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>24</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_2_project_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>24</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="43" name="sequential/mobilenetv2_1.00_160/block_2_add/add:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_2_add/add:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>24</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>-1</dim>
+					<dim>24</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_2_add/add:0">
+					<dim>-1</dim>
+					<dim>24</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="44" name="sequential/mobilenetv2_1.00_160/block_3_expand/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="144, 24, 1, 1" offset="60736" size="13824"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_3_expand/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_3_expand/Conv2D_weights_fused_bn">
+					<dim>144</dim>
+					<dim>24</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="45" name="Convolution_710" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_710"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>24</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>144</dim>
+					<dim>24</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="46" name="Reshape_730" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 144, 1, 1" offset="74560" size="576"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>144</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="47" name="sequential/mobilenetv2_1.00_160/block_3_expand_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_729, Reshape_730, sequential/mobilenetv2_1.00_160/block_3_expand_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>144</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_3_expand_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="48" name="sequential/mobilenetv2_1.00_160/block_3_expand_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_758, sequential/mobilenetv2_1.00_160/block_3_expand_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_3_expand_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="49" name="Reshape_771" type="Const" version="opset1">
+			<data element_type="f32" shape="144, 1, 1, 3, 3" offset="75136" size="5184"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>144</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="50" name="GroupConvolution_837" type="GroupConvolution" version="opset1">
+			<data strides="2, 2" pads_begin="0, 0" pads_end="1, 1" dilations="1, 1" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="GroupConvolution_837, Reshape_771, sequential/mobilenetv2_1.00_160/block_3_pad/Pad:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>40</dim>
+					<dim>40</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>144</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="51" name="Reshape_857" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 144, 1, 1" offset="80320" size="576"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>144</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="52" name="sequential/mobilenetv2_1.00_160/block_3_depthwise_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_856, Reshape_857, sequential/mobilenetv2_1.00_160/block_3_depthwise_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>144</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_3_depthwise_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="53" name="sequential/mobilenetv2_1.00_160/block_3_depthwise_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_885, sequential/mobilenetv2_1.00_160/block_3_depthwise_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_3_depthwise_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="54" name="sequential/mobilenetv2_1.00_160/block_3_project/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="32, 144, 1, 1" offset="80896" size="18432"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_3_project/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_3_project/Conv2D_weights_fused_bn">
+					<dim>32</dim>
+					<dim>144</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="55" name="Convolution_887" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_887"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>144</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>32</dim>
+					<dim>144</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="56" name="Reshape_907" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 32, 1, 1" offset="99328" size="128"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="57" name="sequential/mobilenetv2_1.00_160/block_3_project_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_906, Reshape_907, sequential/mobilenetv2_1.00_160/block_3_project_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_3_project_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="58" name="Multiply_8564" type="Const" version="opset1">
+			<data element_type="f32" shape="192, 32, 1, 1" offset="99456" size="24576"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>192</dim>
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="59" name="Multiply_8504" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_4_expand/Conv2D:0, sequential/mobilenetv2_1.00_160/block_4_expand_BN/FusedBatchNormV3/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_4_expand_BN/FusedBatchNormV3/ReadVariableOp_1:0, sequential/mobilenetv2_1.00_160/block_4_expand_BN/FusedBatchNormV3:0, sequential/mobilenetv2_1.00_160/block_4_expand_BN/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_4_expand_BN/ReadVariableOp_1:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>192</dim>
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="60" name="Constant_8509" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 192, 1, 1" offset="124032" size="768"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="61" name="sequential/mobilenetv2_1.00_160/block_4_expand_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_4_expand_BN/FusedBatchNormV3/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_4_expand_BN/FusedBatchNormV3/ReadVariableOp_1:0, sequential/mobilenetv2_1.00_160/block_4_expand_BN/FusedBatchNormV3:0, sequential/mobilenetv2_1.00_160/block_4_expand_BN/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_4_expand_BN/ReadVariableOp_1:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_4_expand_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="62" name="sequential/mobilenetv2_1.00_160/block_4_expand_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_938, sequential/mobilenetv2_1.00_160/block_4_expand_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_4_expand_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="63" name="Reshape_947" type="Const" version="opset1">
+			<data element_type="f32" shape="192, 1, 1, 3, 3" offset="124800" size="6912"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="64" name="GroupConvolution_1013" type="GroupConvolution" version="opset1">
+			<data strides="1, 1" pads_begin="1, 1" pads_end="1, 1" dilations="1, 1" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="GroupConvolution_1013, Reshape_947"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="65" name="Reshape_1033" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 192, 1, 1" offset="131712" size="768"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="66" name="sequential/mobilenetv2_1.00_160/block_4_depthwise_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_1032, Reshape_1033, sequential/mobilenetv2_1.00_160/block_4_depthwise_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_4_depthwise_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="67" name="sequential/mobilenetv2_1.00_160/block_4_depthwise_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_1061, sequential/mobilenetv2_1.00_160/block_4_depthwise_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_4_depthwise_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="68" name="sequential/mobilenetv2_1.00_160/block_4_project/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="32, 192, 1, 1" offset="132480" size="24576"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_4_project/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_4_project/Conv2D_weights_fused_bn">
+					<dim>32</dim>
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="69" name="Convolution_1063" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_1063"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>32</dim>
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="70" name="Reshape_1083" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 32, 1, 1" offset="157056" size="128"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="71" name="sequential/mobilenetv2_1.00_160/block_4_project_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_1082, Reshape_1083, sequential/mobilenetv2_1.00_160/block_4_project_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_4_project_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="72" name="sequential/mobilenetv2_1.00_160/block_4_add/add:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_4_add/add:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_4_add/add:0">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="73" name="sequential/mobilenetv2_1.00_160/block_5_expand/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="192, 32, 1, 1" offset="157184" size="24576"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_5_expand/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_5_expand/Conv2D_weights_fused_bn">
+					<dim>192</dim>
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="74" name="Convolution_1112" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_1112"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>192</dim>
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="75" name="Reshape_1132" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 192, 1, 1" offset="181760" size="768"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="76" name="sequential/mobilenetv2_1.00_160/block_5_expand_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_1131, Reshape_1132, sequential/mobilenetv2_1.00_160/block_5_expand_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_5_expand_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="77" name="sequential/mobilenetv2_1.00_160/block_5_expand_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_1160, sequential/mobilenetv2_1.00_160/block_5_expand_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_5_expand_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="78" name="Reshape_1169" type="Const" version="opset1">
+			<data element_type="f32" shape="192, 1, 1, 3, 3" offset="182528" size="6912"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="79" name="GroupConvolution_1235" type="GroupConvolution" version="opset1">
+			<data strides="1, 1" pads_begin="1, 1" pads_end="1, 1" dilations="1, 1" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="GroupConvolution_1235, Reshape_1169"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="80" name="Reshape_1255" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 192, 1, 1" offset="189440" size="768"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="81" name="sequential/mobilenetv2_1.00_160/block_5_depthwise_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_1254, Reshape_1255, sequential/mobilenetv2_1.00_160/block_5_depthwise_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_5_depthwise_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="82" name="sequential/mobilenetv2_1.00_160/block_5_depthwise_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_1283, sequential/mobilenetv2_1.00_160/block_5_depthwise_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_5_depthwise_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="83" name="sequential/mobilenetv2_1.00_160/block_5_project/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="32, 192, 1, 1" offset="190208" size="24576"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_5_project/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_5_project/Conv2D_weights_fused_bn">
+					<dim>32</dim>
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="84" name="Convolution_1285" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_1285"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>32</dim>
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="85" name="Reshape_1305" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 32, 1, 1" offset="214784" size="128"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="86" name="sequential/mobilenetv2_1.00_160/block_5_project_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_1304, Reshape_1305, sequential/mobilenetv2_1.00_160/block_5_project_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_5_project_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="87" name="sequential/mobilenetv2_1.00_160/block_5_add/add:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_5_add/add:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_5_add/add:0">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="88" name="sequential/mobilenetv2_1.00_160/block_6_expand/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="192, 32, 1, 1" offset="214912" size="24576"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_6_expand/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_6_expand/Conv2D_weights_fused_bn">
+					<dim>192</dim>
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="89" name="Convolution_1334" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_1334"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>32</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>192</dim>
+					<dim>32</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="90" name="Reshape_1354" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 192, 1, 1" offset="239488" size="768"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="91" name="sequential/mobilenetv2_1.00_160/block_6_expand_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_1353, Reshape_1354, sequential/mobilenetv2_1.00_160/block_6_expand_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_6_expand_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="92" name="sequential/mobilenetv2_1.00_160/block_6_expand_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_1382, sequential/mobilenetv2_1.00_160/block_6_expand_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_6_expand_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="93" name="Reshape_1395" type="Const" version="opset1">
+			<data element_type="f32" shape="192, 1, 1, 3, 3" offset="240256" size="6912"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="94" name="GroupConvolution_1461" type="GroupConvolution" version="opset1">
+			<data strides="2, 2" pads_begin="0, 0" pads_end="1, 1" dilations="1, 1" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="GroupConvolution_1461, Reshape_1395, sequential/mobilenetv2_1.00_160/block_6_pad/Pad:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>20</dim>
+					<dim>20</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="95" name="Reshape_1481" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 192, 1, 1" offset="247168" size="768"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="96" name="sequential/mobilenetv2_1.00_160/block_6_depthwise_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_1480, Reshape_1481, sequential/mobilenetv2_1.00_160/block_6_depthwise_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_6_depthwise_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="97" name="sequential/mobilenetv2_1.00_160/block_6_depthwise_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_1509, sequential/mobilenetv2_1.00_160/block_6_depthwise_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_6_depthwise_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="98" name="sequential/mobilenetv2_1.00_160/block_6_project/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="64, 192, 1, 1" offset="247936" size="49152"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_6_project/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_6_project/Conv2D_weights_fused_bn">
+					<dim>64</dim>
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="99" name="Convolution_1511" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_1511"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>192</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>64</dim>
+					<dim>192</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="100" name="Reshape_1531" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 64, 1, 1" offset="297088" size="256"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>64</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="101" name="sequential/mobilenetv2_1.00_160/block_6_project_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_1530, Reshape_1531, sequential/mobilenetv2_1.00_160/block_6_project_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>64</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_6_project_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="102" name="Multiply_8573" type="Const" version="opset1">
+			<data element_type="f32" shape="384, 64, 1, 1" offset="297344" size="98304"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>384</dim>
+					<dim>64</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="103" name="Multiply_8511" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_7_expand/Conv2D:0, sequential/mobilenetv2_1.00_160/block_7_expand_BN/FusedBatchNormV3/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_7_expand_BN/FusedBatchNormV3/ReadVariableOp_1:0, sequential/mobilenetv2_1.00_160/block_7_expand_BN/FusedBatchNormV3:0, sequential/mobilenetv2_1.00_160/block_7_expand_BN/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_7_expand_BN/ReadVariableOp_1:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>384</dim>
+					<dim>64</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="104" name="Constant_8516" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 384, 1, 1" offset="395648" size="1536"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="105" name="sequential/mobilenetv2_1.00_160/block_7_expand_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_7_expand_BN/FusedBatchNormV3/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_7_expand_BN/FusedBatchNormV3/ReadVariableOp_1:0, sequential/mobilenetv2_1.00_160/block_7_expand_BN/FusedBatchNormV3:0, sequential/mobilenetv2_1.00_160/block_7_expand_BN/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_7_expand_BN/ReadVariableOp_1:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_7_expand_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="106" name="sequential/mobilenetv2_1.00_160/block_7_expand_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_1562, sequential/mobilenetv2_1.00_160/block_7_expand_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_7_expand_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="107" name="Reshape_1571" type="Const" version="opset1">
+			<data element_type="f32" shape="384, 1, 1, 3, 3" offset="397184" size="13824"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="108" name="GroupConvolution_1637" type="GroupConvolution" version="opset1">
+			<data strides="1, 1" pads_begin="1, 1" pads_end="1, 1" dilations="1, 1" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="GroupConvolution_1637, Reshape_1571"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="109" name="Reshape_1657" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 384, 1, 1" offset="411008" size="1536"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="110" name="sequential/mobilenetv2_1.00_160/block_7_depthwise_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_1656, Reshape_1657, sequential/mobilenetv2_1.00_160/block_7_depthwise_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_7_depthwise_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="111" name="sequential/mobilenetv2_1.00_160/block_7_depthwise_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_1685, sequential/mobilenetv2_1.00_160/block_7_depthwise_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_7_depthwise_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="112" name="sequential/mobilenetv2_1.00_160/block_7_project/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="64, 384, 1, 1" offset="412544" size="98304"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_7_project/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_7_project/Conv2D_weights_fused_bn">
+					<dim>64</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="113" name="Convolution_1687" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_1687"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>64</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="114" name="Reshape_1707" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 64, 1, 1" offset="510848" size="256"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>64</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="115" name="sequential/mobilenetv2_1.00_160/block_7_project_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_1706, Reshape_1707, sequential/mobilenetv2_1.00_160/block_7_project_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>64</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_7_project_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="116" name="sequential/mobilenetv2_1.00_160/block_7_add/add:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_7_add/add:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_7_add/add:0">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="117" name="sequential/mobilenetv2_1.00_160/block_8_expand/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="384, 64, 1, 1" offset="511104" size="98304"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_8_expand/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_8_expand/Conv2D_weights_fused_bn">
+					<dim>384</dim>
+					<dim>64</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="118" name="Convolution_1736" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_1736"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>384</dim>
+					<dim>64</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="119" name="Reshape_1756" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 384, 1, 1" offset="609408" size="1536"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="120" name="sequential/mobilenetv2_1.00_160/block_8_expand_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_1755, Reshape_1756, sequential/mobilenetv2_1.00_160/block_8_expand_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_8_expand_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="121" name="sequential/mobilenetv2_1.00_160/block_8_expand_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_1784, sequential/mobilenetv2_1.00_160/block_8_expand_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_8_expand_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="122" name="Reshape_1793" type="Const" version="opset1">
+			<data element_type="f32" shape="384, 1, 1, 3, 3" offset="610944" size="13824"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="123" name="GroupConvolution_1859" type="GroupConvolution" version="opset1">
+			<data strides="1, 1" pads_begin="1, 1" pads_end="1, 1" dilations="1, 1" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="GroupConvolution_1859, Reshape_1793"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="124" name="Reshape_1879" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 384, 1, 1" offset="624768" size="1536"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="125" name="sequential/mobilenetv2_1.00_160/block_8_depthwise_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_1878, Reshape_1879, sequential/mobilenetv2_1.00_160/block_8_depthwise_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_8_depthwise_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="126" name="sequential/mobilenetv2_1.00_160/block_8_depthwise_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_1907, sequential/mobilenetv2_1.00_160/block_8_depthwise_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_8_depthwise_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="127" name="sequential/mobilenetv2_1.00_160/block_8_project/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="64, 384, 1, 1" offset="626304" size="98304"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_8_project/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_8_project/Conv2D_weights_fused_bn">
+					<dim>64</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="128" name="Convolution_1909" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_1909"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>64</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="129" name="Reshape_1929" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 64, 1, 1" offset="724608" size="256"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>64</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="130" name="sequential/mobilenetv2_1.00_160/block_8_project_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_1928, Reshape_1929, sequential/mobilenetv2_1.00_160/block_8_project_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>64</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_8_project_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="131" name="sequential/mobilenetv2_1.00_160/block_8_add/add:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_8_add/add:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_8_add/add:0">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="132" name="sequential/mobilenetv2_1.00_160/block_9_expand/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="384, 64, 1, 1" offset="724864" size="98304"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_9_expand/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_9_expand/Conv2D_weights_fused_bn">
+					<dim>384</dim>
+					<dim>64</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="133" name="Convolution_1958" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_1958"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>384</dim>
+					<dim>64</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="134" name="Reshape_1978" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 384, 1, 1" offset="823168" size="1536"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="135" name="sequential/mobilenetv2_1.00_160/block_9_expand_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_1977, Reshape_1978, sequential/mobilenetv2_1.00_160/block_9_expand_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_9_expand_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="136" name="sequential/mobilenetv2_1.00_160/block_9_expand_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_2006, sequential/mobilenetv2_1.00_160/block_9_expand_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_9_expand_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="137" name="Reshape_2015" type="Const" version="opset1">
+			<data element_type="f32" shape="384, 1, 1, 3, 3" offset="824704" size="13824"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="138" name="GroupConvolution_2081" type="GroupConvolution" version="opset1">
+			<data strides="1, 1" pads_begin="1, 1" pads_end="1, 1" dilations="1, 1" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="GroupConvolution_2081, Reshape_2015"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="139" name="Reshape_2101" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 384, 1, 1" offset="838528" size="1536"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="140" name="sequential/mobilenetv2_1.00_160/block_9_depthwise_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_2100, Reshape_2101, sequential/mobilenetv2_1.00_160/block_9_depthwise_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_9_depthwise_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="141" name="sequential/mobilenetv2_1.00_160/block_9_depthwise_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_2129, sequential/mobilenetv2_1.00_160/block_9_depthwise_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_9_depthwise_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="142" name="sequential/mobilenetv2_1.00_160/block_9_project/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="64, 384, 1, 1" offset="840064" size="98304"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_9_project/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_9_project/Conv2D_weights_fused_bn">
+					<dim>64</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="143" name="Convolution_2131" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_2131"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>64</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="144" name="Reshape_2151" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 64, 1, 1" offset="938368" size="256"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>64</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="145" name="sequential/mobilenetv2_1.00_160/block_9_project_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_2150, Reshape_2151, sequential/mobilenetv2_1.00_160/block_9_project_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>64</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_9_project_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="146" name="sequential/mobilenetv2_1.00_160/block_9_add/add:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_9_add/add:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_9_add/add:0">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="147" name="sequential/mobilenetv2_1.00_160/block_10_expand/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="384, 64, 1, 1" offset="938624" size="98304"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_10_expand/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_10_expand/Conv2D_weights_fused_bn">
+					<dim>384</dim>
+					<dim>64</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="148" name="Convolution_2180" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_2180"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>64</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>384</dim>
+					<dim>64</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="149" name="Reshape_2200" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 384, 1, 1" offset="1036928" size="1536"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="150" name="sequential/mobilenetv2_1.00_160/block_10_expand_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_2199, Reshape_2200, sequential/mobilenetv2_1.00_160/block_10_expand_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_10_expand_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="151" name="sequential/mobilenetv2_1.00_160/block_10_expand_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_2228, sequential/mobilenetv2_1.00_160/block_10_expand_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_10_expand_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="152" name="Reshape_2237" type="Const" version="opset1">
+			<data element_type="f32" shape="384, 1, 1, 3, 3" offset="1038464" size="13824"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="153" name="GroupConvolution_2303" type="GroupConvolution" version="opset1">
+			<data strides="1, 1" pads_begin="1, 1" pads_end="1, 1" dilations="1, 1" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="GroupConvolution_2303, Reshape_2237"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="154" name="Reshape_2323" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 384, 1, 1" offset="1052288" size="1536"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="155" name="sequential/mobilenetv2_1.00_160/block_10_depthwise_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_2322, Reshape_2323, sequential/mobilenetv2_1.00_160/block_10_depthwise_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_10_depthwise_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="156" name="sequential/mobilenetv2_1.00_160/block_10_depthwise_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_2351, sequential/mobilenetv2_1.00_160/block_10_depthwise_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_10_depthwise_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="157" name="sequential/mobilenetv2_1.00_160/block_10_project/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="96, 384, 1, 1" offset="1053824" size="147456"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_10_project/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_10_project/Conv2D_weights_fused_bn">
+					<dim>96</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="158" name="Convolution_2353" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_2353"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>384</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>96</dim>
+					<dim>384</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="159" name="Reshape_2373" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 96, 1, 1" offset="1201280" size="384"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="160" name="sequential/mobilenetv2_1.00_160/block_10_project_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_2372, Reshape_2373, sequential/mobilenetv2_1.00_160/block_10_project_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_10_project_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="161" name="Multiply_8582" type="Const" version="opset1">
+			<data element_type="f32" shape="576, 96, 1, 1" offset="1201664" size="221184"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>576</dim>
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="162" name="Multiply_8518" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_11_expand/Conv2D:0, sequential/mobilenetv2_1.00_160/block_11_expand_BN/FusedBatchNormV3/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_11_expand_BN/FusedBatchNormV3/ReadVariableOp_1:0, sequential/mobilenetv2_1.00_160/block_11_expand_BN/FusedBatchNormV3:0, sequential/mobilenetv2_1.00_160/block_11_expand_BN/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_11_expand_BN/ReadVariableOp_1:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>576</dim>
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="163" name="Constant_8523" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 576, 1, 1" offset="1422848" size="2304"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="164" name="sequential/mobilenetv2_1.00_160/block_11_expand_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_11_expand_BN/FusedBatchNormV3/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_11_expand_BN/FusedBatchNormV3/ReadVariableOp_1:0, sequential/mobilenetv2_1.00_160/block_11_expand_BN/FusedBatchNormV3:0, sequential/mobilenetv2_1.00_160/block_11_expand_BN/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_11_expand_BN/ReadVariableOp_1:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_11_expand_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="165" name="sequential/mobilenetv2_1.00_160/block_11_expand_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_2404, sequential/mobilenetv2_1.00_160/block_11_expand_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_11_expand_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="166" name="Reshape_2413" type="Const" version="opset1">
+			<data element_type="f32" shape="576, 1, 1, 3, 3" offset="1425152" size="20736"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="167" name="GroupConvolution_2479" type="GroupConvolution" version="opset1">
+			<data strides="1, 1" pads_begin="1, 1" pads_end="1, 1" dilations="1, 1" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="GroupConvolution_2479, Reshape_2413"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="168" name="Reshape_2499" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 576, 1, 1" offset="1445888" size="2304"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="169" name="sequential/mobilenetv2_1.00_160/block_11_depthwise_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_2498, Reshape_2499, sequential/mobilenetv2_1.00_160/block_11_depthwise_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_11_depthwise_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="170" name="sequential/mobilenetv2_1.00_160/block_11_depthwise_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_2527, sequential/mobilenetv2_1.00_160/block_11_depthwise_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_11_depthwise_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="171" name="sequential/mobilenetv2_1.00_160/block_11_project/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="96, 576, 1, 1" offset="1448192" size="221184"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_11_project/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_11_project/Conv2D_weights_fused_bn">
+					<dim>96</dim>
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="172" name="Convolution_2529" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_2529"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>96</dim>
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="173" name="Reshape_2549" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 96, 1, 1" offset="1669376" size="384"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="174" name="sequential/mobilenetv2_1.00_160/block_11_project_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_2548, Reshape_2549, sequential/mobilenetv2_1.00_160/block_11_project_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_11_project_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="175" name="sequential/mobilenetv2_1.00_160/block_11_add/add:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_11_add/add:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_11_add/add:0">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="176" name="sequential/mobilenetv2_1.00_160/block_12_expand/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="576, 96, 1, 1" offset="1669760" size="221184"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_12_expand/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_12_expand/Conv2D_weights_fused_bn">
+					<dim>576</dim>
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="177" name="Convolution_2578" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_2578"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>576</dim>
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="178" name="Reshape_2598" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 576, 1, 1" offset="1890944" size="2304"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="179" name="sequential/mobilenetv2_1.00_160/block_12_expand_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_2597, Reshape_2598, sequential/mobilenetv2_1.00_160/block_12_expand_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_12_expand_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="180" name="sequential/mobilenetv2_1.00_160/block_12_expand_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_2626, sequential/mobilenetv2_1.00_160/block_12_expand_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_12_expand_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="181" name="Reshape_2635" type="Const" version="opset1">
+			<data element_type="f32" shape="576, 1, 1, 3, 3" offset="1893248" size="20736"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="182" name="GroupConvolution_2701" type="GroupConvolution" version="opset1">
+			<data strides="1, 1" pads_begin="1, 1" pads_end="1, 1" dilations="1, 1" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="GroupConvolution_2701, Reshape_2635"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="183" name="Reshape_2721" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 576, 1, 1" offset="1913984" size="2304"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="184" name="sequential/mobilenetv2_1.00_160/block_12_depthwise_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_2720, Reshape_2721, sequential/mobilenetv2_1.00_160/block_12_depthwise_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_12_depthwise_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="185" name="sequential/mobilenetv2_1.00_160/block_12_depthwise_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_2749, sequential/mobilenetv2_1.00_160/block_12_depthwise_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_12_depthwise_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="186" name="sequential/mobilenetv2_1.00_160/block_12_project/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="96, 576, 1, 1" offset="1916288" size="221184"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_12_project/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_12_project/Conv2D_weights_fused_bn">
+					<dim>96</dim>
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="187" name="Convolution_2751" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_2751"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>96</dim>
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="188" name="Reshape_2771" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 96, 1, 1" offset="2137472" size="384"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="189" name="sequential/mobilenetv2_1.00_160/block_12_project_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_2770, Reshape_2771, sequential/mobilenetv2_1.00_160/block_12_project_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_12_project_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="190" name="sequential/mobilenetv2_1.00_160/block_12_add/add:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_12_add/add:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_12_add/add:0">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="191" name="sequential/mobilenetv2_1.00_160/block_13_expand/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="576, 96, 1, 1" offset="2137856" size="221184"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_13_expand/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_13_expand/Conv2D_weights_fused_bn">
+					<dim>576</dim>
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="192" name="Convolution_2800" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_2800"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>96</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>576</dim>
+					<dim>96</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="193" name="Reshape_2820" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 576, 1, 1" offset="2359040" size="2304"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="194" name="sequential/mobilenetv2_1.00_160/block_13_expand_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_2819, Reshape_2820, sequential/mobilenetv2_1.00_160/block_13_expand_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_13_expand_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="195" name="sequential/mobilenetv2_1.00_160/block_13_expand_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_2848, sequential/mobilenetv2_1.00_160/block_13_expand_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_13_expand_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="196" name="Reshape_2861" type="Const" version="opset1">
+			<data element_type="f32" shape="576, 1, 1, 3, 3" offset="2361344" size="20736"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="197" name="GroupConvolution_2927" type="GroupConvolution" version="opset1">
+			<data strides="2, 2" pads_begin="0, 0" pads_end="1, 1" dilations="1, 1" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="GroupConvolution_2927, Reshape_2861, sequential/mobilenetv2_1.00_160/block_13_pad/Pad:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>10</dim>
+					<dim>10</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="198" name="Reshape_2947" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 576, 1, 1" offset="2382080" size="2304"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="199" name="sequential/mobilenetv2_1.00_160/block_13_depthwise_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_2946, Reshape_2947, sequential/mobilenetv2_1.00_160/block_13_depthwise_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_13_depthwise_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="200" name="sequential/mobilenetv2_1.00_160/block_13_depthwise_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_2975, sequential/mobilenetv2_1.00_160/block_13_depthwise_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_13_depthwise_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="201" name="sequential/mobilenetv2_1.00_160/block_13_project/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="160, 576, 1, 1" offset="2384384" size="368640"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_13_project/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_13_project/Conv2D_weights_fused_bn">
+					<dim>160</dim>
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="202" name="Convolution_2977" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_2977"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>576</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>160</dim>
+					<dim>576</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="203" name="Reshape_2997" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 160, 1, 1" offset="2753024" size="640"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>160</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="204" name="sequential/mobilenetv2_1.00_160/block_13_project_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_2996, Reshape_2997, sequential/mobilenetv2_1.00_160/block_13_project_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>160</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_13_project_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="205" name="Multiply_8591" type="Const" version="opset1">
+			<data element_type="f32" shape="960, 160, 1, 1" offset="2753664" size="614400"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>960</dim>
+					<dim>160</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="206" name="Multiply_8525" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_14_expand/Conv2D:0, sequential/mobilenetv2_1.00_160/block_14_expand_BN/FusedBatchNormV3/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_14_expand_BN/FusedBatchNormV3/ReadVariableOp_1:0, sequential/mobilenetv2_1.00_160/block_14_expand_BN/FusedBatchNormV3:0, sequential/mobilenetv2_1.00_160/block_14_expand_BN/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_14_expand_BN/ReadVariableOp_1:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>960</dim>
+					<dim>160</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="207" name="Constant_8530" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 960, 1, 1" offset="3368064" size="3840"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="208" name="sequential/mobilenetv2_1.00_160/block_14_expand_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_14_expand_BN/FusedBatchNormV3/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_14_expand_BN/FusedBatchNormV3/ReadVariableOp_1:0, sequential/mobilenetv2_1.00_160/block_14_expand_BN/FusedBatchNormV3:0, sequential/mobilenetv2_1.00_160/block_14_expand_BN/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/block_14_expand_BN/ReadVariableOp_1:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_14_expand_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="209" name="sequential/mobilenetv2_1.00_160/block_14_expand_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_3028, sequential/mobilenetv2_1.00_160/block_14_expand_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_14_expand_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="210" name="Reshape_3037" type="Const" version="opset1">
+			<data element_type="f32" shape="960, 1, 1, 3, 3" offset="3371904" size="34560"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="211" name="GroupConvolution_3103" type="GroupConvolution" version="opset1">
+			<data strides="1, 1" pads_begin="1, 1" pads_end="1, 1" dilations="1, 1" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="GroupConvolution_3103, Reshape_3037"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="212" name="Reshape_3123" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 960, 1, 1" offset="3406464" size="3840"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="213" name="sequential/mobilenetv2_1.00_160/block_14_depthwise_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_3122, Reshape_3123, sequential/mobilenetv2_1.00_160/block_14_depthwise_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_14_depthwise_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="214" name="sequential/mobilenetv2_1.00_160/block_14_depthwise_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_3151, sequential/mobilenetv2_1.00_160/block_14_depthwise_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_14_depthwise_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="215" name="sequential/mobilenetv2_1.00_160/block_14_project/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="160, 960, 1, 1" offset="3410304" size="614400"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_14_project/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_14_project/Conv2D_weights_fused_bn">
+					<dim>160</dim>
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="216" name="Convolution_3153" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_3153"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>160</dim>
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="217" name="Reshape_3173" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 160, 1, 1" offset="4024704" size="640"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>160</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="218" name="sequential/mobilenetv2_1.00_160/block_14_project_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_3172, Reshape_3173, sequential/mobilenetv2_1.00_160/block_14_project_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>160</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_14_project_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="219" name="sequential/mobilenetv2_1.00_160/block_14_add/add:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_14_add/add:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_14_add/add:0">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="220" name="sequential/mobilenetv2_1.00_160/block_15_expand/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="960, 160, 1, 1" offset="4025344" size="614400"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_15_expand/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_15_expand/Conv2D_weights_fused_bn">
+					<dim>960</dim>
+					<dim>160</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="221" name="Convolution_3202" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_3202"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>960</dim>
+					<dim>160</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="222" name="Reshape_3222" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 960, 1, 1" offset="4639744" size="3840"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="223" name="sequential/mobilenetv2_1.00_160/block_15_expand_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_3221, Reshape_3222, sequential/mobilenetv2_1.00_160/block_15_expand_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_15_expand_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="224" name="sequential/mobilenetv2_1.00_160/block_15_expand_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_3250, sequential/mobilenetv2_1.00_160/block_15_expand_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_15_expand_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="225" name="Reshape_3259" type="Const" version="opset1">
+			<data element_type="f32" shape="960, 1, 1, 3, 3" offset="4643584" size="34560"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="226" name="GroupConvolution_3325" type="GroupConvolution" version="opset1">
+			<data strides="1, 1" pads_begin="1, 1" pads_end="1, 1" dilations="1, 1" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="GroupConvolution_3325, Reshape_3259"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="227" name="Reshape_3345" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 960, 1, 1" offset="4678144" size="3840"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="228" name="sequential/mobilenetv2_1.00_160/block_15_depthwise_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_3344, Reshape_3345, sequential/mobilenetv2_1.00_160/block_15_depthwise_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_15_depthwise_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="229" name="sequential/mobilenetv2_1.00_160/block_15_depthwise_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_3373, sequential/mobilenetv2_1.00_160/block_15_depthwise_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_15_depthwise_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="230" name="sequential/mobilenetv2_1.00_160/block_15_project/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="160, 960, 1, 1" offset="4681984" size="614400"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_15_project/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_15_project/Conv2D_weights_fused_bn">
+					<dim>160</dim>
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="231" name="Convolution_3375" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_3375"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>160</dim>
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="232" name="Reshape_3395" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 160, 1, 1" offset="5296384" size="640"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>160</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="233" name="sequential/mobilenetv2_1.00_160/block_15_project_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_3394, Reshape_3395, sequential/mobilenetv2_1.00_160/block_15_project_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>160</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_15_project_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="234" name="sequential/mobilenetv2_1.00_160/block_15_add/add:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_15_add/add:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_15_add/add:0">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="235" name="sequential/mobilenetv2_1.00_160/block_16_expand/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="960, 160, 1, 1" offset="5297024" size="614400"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_16_expand/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_16_expand/Conv2D_weights_fused_bn">
+					<dim>960</dim>
+					<dim>160</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="236" name="Convolution_3424" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_3424"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>160</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>960</dim>
+					<dim>160</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="237" name="Reshape_3444" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 960, 1, 1" offset="5911424" size="3840"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="238" name="sequential/mobilenetv2_1.00_160/block_16_expand_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_3443, Reshape_3444, sequential/mobilenetv2_1.00_160/block_16_expand_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_16_expand_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="239" name="sequential/mobilenetv2_1.00_160/block_16_expand_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_3472, sequential/mobilenetv2_1.00_160/block_16_expand_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_16_expand_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="240" name="Reshape_3481" type="Const" version="opset1">
+			<data element_type="f32" shape="960, 1, 1, 3, 3" offset="5915264" size="34560"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="241" name="GroupConvolution_3547" type="GroupConvolution" version="opset1">
+			<data strides="1, 1" pads_begin="1, 1" pads_end="1, 1" dilations="1, 1" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="GroupConvolution_3547, Reshape_3481"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+					<dim>3</dim>
+					<dim>3</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="242" name="Reshape_3567" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 960, 1, 1" offset="5949824" size="3840"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="243" name="sequential/mobilenetv2_1.00_160/block_16_depthwise_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_3566, Reshape_3567, sequential/mobilenetv2_1.00_160/block_16_depthwise_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_16_depthwise_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="244" name="sequential/mobilenetv2_1.00_160/block_16_depthwise_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_3595, sequential/mobilenetv2_1.00_160/block_16_depthwise_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_16_depthwise_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="245" name="sequential/mobilenetv2_1.00_160/block_16_project/Conv2D_weights_fused_bn" type="Const" version="opset1">
+			<data element_type="f32" shape="320, 960, 1, 1" offset="5953664" size="1228800"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/block_16_project/Conv2D_weights_fused_bn"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_16_project/Conv2D_weights_fused_bn">
+					<dim>320</dim>
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="246" name="Convolution_3597" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Convolution_3597"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>960</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>320</dim>
+					<dim>960</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>320</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="247" name="Reshape_3617" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 320, 1, 1" offset="7182464" size="1280"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>320</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="248" name="sequential/mobilenetv2_1.00_160/block_16_project_BN/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Concat_3616, Reshape_3617, sequential/mobilenetv2_1.00_160/block_16_project_BN/FusedBatchNormV3:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>320</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>320</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/block_16_project_BN/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>320</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="249" name="Multiply_8600" type="Const" version="opset1">
+			<data element_type="f32" shape="1280, 320, 1, 1" offset="7183744" size="1638400"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1280</dim>
+					<dim>320</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="250" name="Multiply_8532" type="Convolution" version="opset1">
+			<data strides="1, 1" dilations="1, 1" pads_begin="0, 0" pads_end="0, 0" auto_pad="explicit"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/Conv_1/Conv2D:0, sequential/mobilenetv2_1.00_160/Conv_1_bn/FusedBatchNormV3/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/Conv_1_bn/FusedBatchNormV3/ReadVariableOp_1:0, sequential/mobilenetv2_1.00_160/Conv_1_bn/FusedBatchNormV3:0, sequential/mobilenetv2_1.00_160/Conv_1_bn/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/Conv_1_bn/ReadVariableOp_1:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>320</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1280</dim>
+					<dim>320</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>-1</dim>
+					<dim>1280</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="251" name="Constant_8537" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 1280, 1, 1" offset="8822144" size="5120"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>1280</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="252" name="sequential/mobilenetv2_1.00_160/Conv_1_bn/FusedBatchNormV3:0" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/mobilenetv2_1.00_160/Conv_1_bn/FusedBatchNormV3/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/Conv_1_bn/FusedBatchNormV3/ReadVariableOp_1:0, sequential/mobilenetv2_1.00_160/Conv_1_bn/FusedBatchNormV3:0, sequential/mobilenetv2_1.00_160/Conv_1_bn/ReadVariableOp:0, sequential/mobilenetv2_1.00_160/Conv_1_bn/ReadVariableOp_1:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>1280</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>1280</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/mobilenetv2_1.00_160/Conv_1_bn/FusedBatchNormV3:0">
+					<dim>-1</dim>
+					<dim>1280</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="253" name="sequential/mobilenetv2_1.00_160/out_relu/Relu6:0" type="Clamp" version="opset1">
+			<data min="0" max="6"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Maximum_3648, sequential/mobilenetv2_1.00_160/out_relu/Relu6:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>1280</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32" names="sequential/mobilenetv2_1.00_160/out_relu/Relu6:0">
+					<dim>-1</dim>
+					<dim>1280</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="254" name="Range_3657" type="Const" version="opset1">
+			<data element_type="i64" shape="2" offset="8827264" size="16"/>
+			<output>
+				<port id="0" precision="I64">
+					<dim>2</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="255" name="sequential/global_average_pooling2d/Mean:0" type="ReduceMean" version="opset1">
+			<data keep_dims="true"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="Range_3657, sequential/global_average_pooling2d/Mean:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>1280</dim>
+					<dim>5</dim>
+					<dim>5</dim>
+				</port>
+				<port id="1" precision="I64">
+					<dim>2</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/global_average_pooling2d/Mean:0">
+					<dim>-1</dim>
+					<dim>1280</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="256" name="const_axes__604" type="Const" version="opset1">
+			<data element_type="i64" shape="2" offset="8827264" size="16"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="const_axes__604"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="I64" names="const_axes__604">
+					<dim>2</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="257" name="sequential/global_average_pooling2d/Mean_Squeeze__605:0" type="Squeeze" version="opset1">
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/global_average_pooling2d/Mean_Squeeze__605:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>1280</dim>
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+				<port id="1" precision="I64">
+					<dim>2</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/global_average_pooling2d/Mean_Squeeze__605:0">
+					<dim>-1</dim>
+					<dim>1280</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="258" name="Constant_7606" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 1280" offset="8827280" size="5120"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/dense/MatMul/ReadVariableOp:0, sequential/dense/MatMul:0"/>
+			</rt_info>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>1280</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="259" name="sequential/dense/MatMul:0" type="MatMul" version="opset1">
+			<data transpose_a="false" transpose_b="true"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="sequential/dense/MatMul/ReadVariableOp:0, sequential/dense/MatMul:0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>1280</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>1280</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="sequential/dense/MatMul:0">
+					<dim>-1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="260" name="Constant_8675" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 1" offset="8832400" size="4"/>
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="261" name="dense" type="Add" version="opset1">
+			<data auto_broadcast="numpy"/>
+			<rt_info>
+				<attribute name="fused_names" version="0" value="dense"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>1</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="dense">
+					<dim>-1</dim>
+					<dim>1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="262" name="dense/sink_port_0" type="Result" version="opset1">
+			<rt_info>
+				<attribute name="fused_names" version="0" value="dense/sink_port_0"/>
+			</rt_info>
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>1</dim>
+				</port>
+			</input>
+		</layer>
+	</layers>
+	<edges>
+		<edge from-layer="0" from-port="0" to-layer="2" to-port="0"/>
+		<edge from-layer="1" from-port="0" to-layer="2" to-port="1"/>
+		<edge from-layer="2" from-port="2" to-layer="4" to-port="0"/>
+		<edge from-layer="3" from-port="0" to-layer="4" to-port="1"/>
+		<edge from-layer="4" from-port="2" to-layer="5" to-port="0"/>
+		<edge from-layer="5" from-port="1" to-layer="7" to-port="0"/>
+		<edge from-layer="6" from-port="0" to-layer="7" to-port="1"/>
+		<edge from-layer="7" from-port="2" to-layer="9" to-port="0"/>
+		<edge from-layer="8" from-port="0" to-layer="9" to-port="1"/>
+		<edge from-layer="9" from-port="2" to-layer="10" to-port="0"/>
+		<edge from-layer="10" from-port="1" to-layer="12" to-port="0"/>
+		<edge from-layer="11" from-port="0" to-layer="12" to-port="1"/>
+		<edge from-layer="12" from-port="2" to-layer="14" to-port="0"/>
+		<edge from-layer="13" from-port="0" to-layer="14" to-port="1"/>
+		<edge from-layer="14" from-port="2" to-layer="16" to-port="0"/>
+		<edge from-layer="15" from-port="0" to-layer="16" to-port="1"/>
+		<edge from-layer="16" from-port="2" to-layer="18" to-port="0"/>
+		<edge from-layer="17" from-port="0" to-layer="18" to-port="1"/>
+		<edge from-layer="18" from-port="2" to-layer="19" to-port="0"/>
+		<edge from-layer="19" from-port="1" to-layer="21" to-port="0"/>
+		<edge from-layer="20" from-port="0" to-layer="21" to-port="1"/>
+		<edge from-layer="21" from-port="2" to-layer="23" to-port="0"/>
+		<edge from-layer="22" from-port="0" to-layer="23" to-port="1"/>
+		<edge from-layer="23" from-port="2" to-layer="24" to-port="0"/>
+		<edge from-layer="24" from-port="1" to-layer="26" to-port="0"/>
+		<edge from-layer="25" from-port="0" to-layer="26" to-port="1"/>
+		<edge from-layer="26" from-port="2" to-layer="28" to-port="0"/>
+		<edge from-layer="27" from-port="0" to-layer="28" to-port="1"/>
+		<edge from-layer="28" from-port="2" to-layer="43" to-port="0"/>
+		<edge from-layer="28" from-port="2" to-layer="30" to-port="0"/>
+		<edge from-layer="29" from-port="0" to-layer="30" to-port="1"/>
+		<edge from-layer="30" from-port="2" to-layer="32" to-port="0"/>
+		<edge from-layer="31" from-port="0" to-layer="32" to-port="1"/>
+		<edge from-layer="32" from-port="2" to-layer="33" to-port="0"/>
+		<edge from-layer="33" from-port="1" to-layer="35" to-port="0"/>
+		<edge from-layer="34" from-port="0" to-layer="35" to-port="1"/>
+		<edge from-layer="35" from-port="2" to-layer="37" to-port="0"/>
+		<edge from-layer="36" from-port="0" to-layer="37" to-port="1"/>
+		<edge from-layer="37" from-port="2" to-layer="38" to-port="0"/>
+		<edge from-layer="38" from-port="1" to-layer="40" to-port="0"/>
+		<edge from-layer="39" from-port="0" to-layer="40" to-port="1"/>
+		<edge from-layer="40" from-port="2" to-layer="42" to-port="0"/>
+		<edge from-layer="41" from-port="0" to-layer="42" to-port="1"/>
+		<edge from-layer="42" from-port="2" to-layer="43" to-port="1"/>
+		<edge from-layer="43" from-port="2" to-layer="45" to-port="0"/>
+		<edge from-layer="44" from-port="0" to-layer="45" to-port="1"/>
+		<edge from-layer="45" from-port="2" to-layer="47" to-port="0"/>
+		<edge from-layer="46" from-port="0" to-layer="47" to-port="1"/>
+		<edge from-layer="47" from-port="2" to-layer="48" to-port="0"/>
+		<edge from-layer="48" from-port="1" to-layer="50" to-port="0"/>
+		<edge from-layer="49" from-port="0" to-layer="50" to-port="1"/>
+		<edge from-layer="50" from-port="2" to-layer="52" to-port="0"/>
+		<edge from-layer="51" from-port="0" to-layer="52" to-port="1"/>
+		<edge from-layer="52" from-port="2" to-layer="53" to-port="0"/>
+		<edge from-layer="53" from-port="1" to-layer="55" to-port="0"/>
+		<edge from-layer="54" from-port="0" to-layer="55" to-port="1"/>
+		<edge from-layer="55" from-port="2" to-layer="57" to-port="0"/>
+		<edge from-layer="56" from-port="0" to-layer="57" to-port="1"/>
+		<edge from-layer="57" from-port="2" to-layer="59" to-port="0"/>
+		<edge from-layer="57" from-port="2" to-layer="72" to-port="0"/>
+		<edge from-layer="58" from-port="0" to-layer="59" to-port="1"/>
+		<edge from-layer="59" from-port="2" to-layer="61" to-port="0"/>
+		<edge from-layer="60" from-port="0" to-layer="61" to-port="1"/>
+		<edge from-layer="61" from-port="2" to-layer="62" to-port="0"/>
+		<edge from-layer="62" from-port="1" to-layer="64" to-port="0"/>
+		<edge from-layer="63" from-port="0" to-layer="64" to-port="1"/>
+		<edge from-layer="64" from-port="2" to-layer="66" to-port="0"/>
+		<edge from-layer="65" from-port="0" to-layer="66" to-port="1"/>
+		<edge from-layer="66" from-port="2" to-layer="67" to-port="0"/>
+		<edge from-layer="67" from-port="1" to-layer="69" to-port="0"/>
+		<edge from-layer="68" from-port="0" to-layer="69" to-port="1"/>
+		<edge from-layer="69" from-port="2" to-layer="71" to-port="0"/>
+		<edge from-layer="70" from-port="0" to-layer="71" to-port="1"/>
+		<edge from-layer="71" from-port="2" to-layer="72" to-port="1"/>
+		<edge from-layer="72" from-port="2" to-layer="87" to-port="0"/>
+		<edge from-layer="72" from-port="2" to-layer="74" to-port="0"/>
+		<edge from-layer="73" from-port="0" to-layer="74" to-port="1"/>
+		<edge from-layer="74" from-port="2" to-layer="76" to-port="0"/>
+		<edge from-layer="75" from-port="0" to-layer="76" to-port="1"/>
+		<edge from-layer="76" from-port="2" to-layer="77" to-port="0"/>
+		<edge from-layer="77" from-port="1" to-layer="79" to-port="0"/>
+		<edge from-layer="78" from-port="0" to-layer="79" to-port="1"/>
+		<edge from-layer="79" from-port="2" to-layer="81" to-port="0"/>
+		<edge from-layer="80" from-port="0" to-layer="81" to-port="1"/>
+		<edge from-layer="81" from-port="2" to-layer="82" to-port="0"/>
+		<edge from-layer="82" from-port="1" to-layer="84" to-port="0"/>
+		<edge from-layer="83" from-port="0" to-layer="84" to-port="1"/>
+		<edge from-layer="84" from-port="2" to-layer="86" to-port="0"/>
+		<edge from-layer="85" from-port="0" to-layer="86" to-port="1"/>
+		<edge from-layer="86" from-port="2" to-layer="87" to-port="1"/>
+		<edge from-layer="87" from-port="2" to-layer="89" to-port="0"/>
+		<edge from-layer="88" from-port="0" to-layer="89" to-port="1"/>
+		<edge from-layer="89" from-port="2" to-layer="91" to-port="0"/>
+		<edge from-layer="90" from-port="0" to-layer="91" to-port="1"/>
+		<edge from-layer="91" from-port="2" to-layer="92" to-port="0"/>
+		<edge from-layer="92" from-port="1" to-layer="94" to-port="0"/>
+		<edge from-layer="93" from-port="0" to-layer="94" to-port="1"/>
+		<edge from-layer="94" from-port="2" to-layer="96" to-port="0"/>
+		<edge from-layer="95" from-port="0" to-layer="96" to-port="1"/>
+		<edge from-layer="96" from-port="2" to-layer="97" to-port="0"/>
+		<edge from-layer="97" from-port="1" to-layer="99" to-port="0"/>
+		<edge from-layer="98" from-port="0" to-layer="99" to-port="1"/>
+		<edge from-layer="99" from-port="2" to-layer="101" to-port="0"/>
+		<edge from-layer="100" from-port="0" to-layer="101" to-port="1"/>
+		<edge from-layer="101" from-port="2" to-layer="103" to-port="0"/>
+		<edge from-layer="101" from-port="2" to-layer="116" to-port="0"/>
+		<edge from-layer="102" from-port="0" to-layer="103" to-port="1"/>
+		<edge from-layer="103" from-port="2" to-layer="105" to-port="0"/>
+		<edge from-layer="104" from-port="0" to-layer="105" to-port="1"/>
+		<edge from-layer="105" from-port="2" to-layer="106" to-port="0"/>
+		<edge from-layer="106" from-port="1" to-layer="108" to-port="0"/>
+		<edge from-layer="107" from-port="0" to-layer="108" to-port="1"/>
+		<edge from-layer="108" from-port="2" to-layer="110" to-port="0"/>
+		<edge from-layer="109" from-port="0" to-layer="110" to-port="1"/>
+		<edge from-layer="110" from-port="2" to-layer="111" to-port="0"/>
+		<edge from-layer="111" from-port="1" to-layer="113" to-port="0"/>
+		<edge from-layer="112" from-port="0" to-layer="113" to-port="1"/>
+		<edge from-layer="113" from-port="2" to-layer="115" to-port="0"/>
+		<edge from-layer="114" from-port="0" to-layer="115" to-port="1"/>
+		<edge from-layer="115" from-port="2" to-layer="116" to-port="1"/>
+		<edge from-layer="116" from-port="2" to-layer="118" to-port="0"/>
+		<edge from-layer="116" from-port="2" to-layer="131" to-port="0"/>
+		<edge from-layer="117" from-port="0" to-layer="118" to-port="1"/>
+		<edge from-layer="118" from-port="2" to-layer="120" to-port="0"/>
+		<edge from-layer="119" from-port="0" to-layer="120" to-port="1"/>
+		<edge from-layer="120" from-port="2" to-layer="121" to-port="0"/>
+		<edge from-layer="121" from-port="1" to-layer="123" to-port="0"/>
+		<edge from-layer="122" from-port="0" to-layer="123" to-port="1"/>
+		<edge from-layer="123" from-port="2" to-layer="125" to-port="0"/>
+		<edge from-layer="124" from-port="0" to-layer="125" to-port="1"/>
+		<edge from-layer="125" from-port="2" to-layer="126" to-port="0"/>
+		<edge from-layer="126" from-port="1" to-layer="128" to-port="0"/>
+		<edge from-layer="127" from-port="0" to-layer="128" to-port="1"/>
+		<edge from-layer="128" from-port="2" to-layer="130" to-port="0"/>
+		<edge from-layer="129" from-port="0" to-layer="130" to-port="1"/>
+		<edge from-layer="130" from-port="2" to-layer="131" to-port="1"/>
+		<edge from-layer="131" from-port="2" to-layer="133" to-port="0"/>
+		<edge from-layer="131" from-port="2" to-layer="146" to-port="0"/>
+		<edge from-layer="132" from-port="0" to-layer="133" to-port="1"/>
+		<edge from-layer="133" from-port="2" to-layer="135" to-port="0"/>
+		<edge from-layer="134" from-port="0" to-layer="135" to-port="1"/>
+		<edge from-layer="135" from-port="2" to-layer="136" to-port="0"/>
+		<edge from-layer="136" from-port="1" to-layer="138" to-port="0"/>
+		<edge from-layer="137" from-port="0" to-layer="138" to-port="1"/>
+		<edge from-layer="138" from-port="2" to-layer="140" to-port="0"/>
+		<edge from-layer="139" from-port="0" to-layer="140" to-port="1"/>
+		<edge from-layer="140" from-port="2" to-layer="141" to-port="0"/>
+		<edge from-layer="141" from-port="1" to-layer="143" to-port="0"/>
+		<edge from-layer="142" from-port="0" to-layer="143" to-port="1"/>
+		<edge from-layer="143" from-port="2" to-layer="145" to-port="0"/>
+		<edge from-layer="144" from-port="0" to-layer="145" to-port="1"/>
+		<edge from-layer="145" from-port="2" to-layer="146" to-port="1"/>
+		<edge from-layer="146" from-port="2" to-layer="148" to-port="0"/>
+		<edge from-layer="147" from-port="0" to-layer="148" to-port="1"/>
+		<edge from-layer="148" from-port="2" to-layer="150" to-port="0"/>
+		<edge from-layer="149" from-port="0" to-layer="150" to-port="1"/>
+		<edge from-layer="150" from-port="2" to-layer="151" to-port="0"/>
+		<edge from-layer="151" from-port="1" to-layer="153" to-port="0"/>
+		<edge from-layer="152" from-port="0" to-layer="153" to-port="1"/>
+		<edge from-layer="153" from-port="2" to-layer="155" to-port="0"/>
+		<edge from-layer="154" from-port="0" to-layer="155" to-port="1"/>
+		<edge from-layer="155" from-port="2" to-layer="156" to-port="0"/>
+		<edge from-layer="156" from-port="1" to-layer="158" to-port="0"/>
+		<edge from-layer="157" from-port="0" to-layer="158" to-port="1"/>
+		<edge from-layer="158" from-port="2" to-layer="160" to-port="0"/>
+		<edge from-layer="159" from-port="0" to-layer="160" to-port="1"/>
+		<edge from-layer="160" from-port="2" to-layer="162" to-port="0"/>
+		<edge from-layer="160" from-port="2" to-layer="175" to-port="0"/>
+		<edge from-layer="161" from-port="0" to-layer="162" to-port="1"/>
+		<edge from-layer="162" from-port="2" to-layer="164" to-port="0"/>
+		<edge from-layer="163" from-port="0" to-layer="164" to-port="1"/>
+		<edge from-layer="164" from-port="2" to-layer="165" to-port="0"/>
+		<edge from-layer="165" from-port="1" to-layer="167" to-port="0"/>
+		<edge from-layer="166" from-port="0" to-layer="167" to-port="1"/>
+		<edge from-layer="167" from-port="2" to-layer="169" to-port="0"/>
+		<edge from-layer="168" from-port="0" to-layer="169" to-port="1"/>
+		<edge from-layer="169" from-port="2" to-layer="170" to-port="0"/>
+		<edge from-layer="170" from-port="1" to-layer="172" to-port="0"/>
+		<edge from-layer="171" from-port="0" to-layer="172" to-port="1"/>
+		<edge from-layer="172" from-port="2" to-layer="174" to-port="0"/>
+		<edge from-layer="173" from-port="0" to-layer="174" to-port="1"/>
+		<edge from-layer="174" from-port="2" to-layer="175" to-port="1"/>
+		<edge from-layer="175" from-port="2" to-layer="190" to-port="0"/>
+		<edge from-layer="175" from-port="2" to-layer="177" to-port="0"/>
+		<edge from-layer="176" from-port="0" to-layer="177" to-port="1"/>
+		<edge from-layer="177" from-port="2" to-layer="179" to-port="0"/>
+		<edge from-layer="178" from-port="0" to-layer="179" to-port="1"/>
+		<edge from-layer="179" from-port="2" to-layer="180" to-port="0"/>
+		<edge from-layer="180" from-port="1" to-layer="182" to-port="0"/>
+		<edge from-layer="181" from-port="0" to-layer="182" to-port="1"/>
+		<edge from-layer="182" from-port="2" to-layer="184" to-port="0"/>
+		<edge from-layer="183" from-port="0" to-layer="184" to-port="1"/>
+		<edge from-layer="184" from-port="2" to-layer="185" to-port="0"/>
+		<edge from-layer="185" from-port="1" to-layer="187" to-port="0"/>
+		<edge from-layer="186" from-port="0" to-layer="187" to-port="1"/>
+		<edge from-layer="187" from-port="2" to-layer="189" to-port="0"/>
+		<edge from-layer="188" from-port="0" to-layer="189" to-port="1"/>
+		<edge from-layer="189" from-port="2" to-layer="190" to-port="1"/>
+		<edge from-layer="190" from-port="2" to-layer="192" to-port="0"/>
+		<edge from-layer="191" from-port="0" to-layer="192" to-port="1"/>
+		<edge from-layer="192" from-port="2" to-layer="194" to-port="0"/>
+		<edge from-layer="193" from-port="0" to-layer="194" to-port="1"/>
+		<edge from-layer="194" from-port="2" to-layer="195" to-port="0"/>
+		<edge from-layer="195" from-port="1" to-layer="197" to-port="0"/>
+		<edge from-layer="196" from-port="0" to-layer="197" to-port="1"/>
+		<edge from-layer="197" from-port="2" to-layer="199" to-port="0"/>
+		<edge from-layer="198" from-port="0" to-layer="199" to-port="1"/>
+		<edge from-layer="199" from-port="2" to-layer="200" to-port="0"/>
+		<edge from-layer="200" from-port="1" to-layer="202" to-port="0"/>
+		<edge from-layer="201" from-port="0" to-layer="202" to-port="1"/>
+		<edge from-layer="202" from-port="2" to-layer="204" to-port="0"/>
+		<edge from-layer="203" from-port="0" to-layer="204" to-port="1"/>
+		<edge from-layer="204" from-port="2" to-layer="219" to-port="0"/>
+		<edge from-layer="204" from-port="2" to-layer="206" to-port="0"/>
+		<edge from-layer="205" from-port="0" to-layer="206" to-port="1"/>
+		<edge from-layer="206" from-port="2" to-layer="208" to-port="0"/>
+		<edge from-layer="207" from-port="0" to-layer="208" to-port="1"/>
+		<edge from-layer="208" from-port="2" to-layer="209" to-port="0"/>
+		<edge from-layer="209" from-port="1" to-layer="211" to-port="0"/>
+		<edge from-layer="210" from-port="0" to-layer="211" to-port="1"/>
+		<edge from-layer="211" from-port="2" to-layer="213" to-port="0"/>
+		<edge from-layer="212" from-port="0" to-layer="213" to-port="1"/>
+		<edge from-layer="213" from-port="2" to-layer="214" to-port="0"/>
+		<edge from-layer="214" from-port="1" to-layer="216" to-port="0"/>
+		<edge from-layer="215" from-port="0" to-layer="216" to-port="1"/>
+		<edge from-layer="216" from-port="2" to-layer="218" to-port="0"/>
+		<edge from-layer="217" from-port="0" to-layer="218" to-port="1"/>
+		<edge from-layer="218" from-port="2" to-layer="219" to-port="1"/>
+		<edge from-layer="219" from-port="2" to-layer="221" to-port="0"/>
+		<edge from-layer="219" from-port="2" to-layer="234" to-port="0"/>
+		<edge from-layer="220" from-port="0" to-layer="221" to-port="1"/>
+		<edge from-layer="221" from-port="2" to-layer="223" to-port="0"/>
+		<edge from-layer="222" from-port="0" to-layer="223" to-port="1"/>
+		<edge from-layer="223" from-port="2" to-layer="224" to-port="0"/>
+		<edge from-layer="224" from-port="1" to-layer="226" to-port="0"/>
+		<edge from-layer="225" from-port="0" to-layer="226" to-port="1"/>
+		<edge from-layer="226" from-port="2" to-layer="228" to-port="0"/>
+		<edge from-layer="227" from-port="0" to-layer="228" to-port="1"/>
+		<edge from-layer="228" from-port="2" to-layer="229" to-port="0"/>
+		<edge from-layer="229" from-port="1" to-layer="231" to-port="0"/>
+		<edge from-layer="230" from-port="0" to-layer="231" to-port="1"/>
+		<edge from-layer="231" from-port="2" to-layer="233" to-port="0"/>
+		<edge from-layer="232" from-port="0" to-layer="233" to-port="1"/>
+		<edge from-layer="233" from-port="2" to-layer="234" to-port="1"/>
+		<edge from-layer="234" from-port="2" to-layer="236" to-port="0"/>
+		<edge from-layer="235" from-port="0" to-layer="236" to-port="1"/>
+		<edge from-layer="236" from-port="2" to-layer="238" to-port="0"/>
+		<edge from-layer="237" from-port="0" to-layer="238" to-port="1"/>
+		<edge from-layer="238" from-port="2" to-layer="239" to-port="0"/>
+		<edge from-layer="239" from-port="1" to-layer="241" to-port="0"/>
+		<edge from-layer="240" from-port="0" to-layer="241" to-port="1"/>
+		<edge from-layer="241" from-port="2" to-layer="243" to-port="0"/>
+		<edge from-layer="242" from-port="0" to-layer="243" to-port="1"/>
+		<edge from-layer="243" from-port="2" to-layer="244" to-port="0"/>
+		<edge from-layer="244" from-port="1" to-layer="246" to-port="0"/>
+		<edge from-layer="245" from-port="0" to-layer="246" to-port="1"/>
+		<edge from-layer="246" from-port="2" to-layer="248" to-port="0"/>
+		<edge from-layer="247" from-port="0" to-layer="248" to-port="1"/>
+		<edge from-layer="248" from-port="2" to-layer="250" to-port="0"/>
+		<edge from-layer="249" from-port="0" to-layer="250" to-port="1"/>
+		<edge from-layer="250" from-port="2" to-layer="252" to-port="0"/>
+		<edge from-layer="251" from-port="0" to-layer="252" to-port="1"/>
+		<edge from-layer="252" from-port="2" to-layer="253" to-port="0"/>
+		<edge from-layer="253" from-port="1" to-layer="255" to-port="0"/>
+		<edge from-layer="254" from-port="0" to-layer="255" to-port="1"/>
+		<edge from-layer="255" from-port="2" to-layer="257" to-port="0"/>
+		<edge from-layer="256" from-port="0" to-layer="257" to-port="1"/>
+		<edge from-layer="257" from-port="2" to-layer="259" to-port="0"/>
+		<edge from-layer="258" from-port="0" to-layer="259" to-port="1"/>
+		<edge from-layer="259" from-port="2" to-layer="261" to-port="0"/>
+		<edge from-layer="260" from-port="0" to-layer="261" to-port="1"/>
+		<edge from-layer="261" from-port="2" to-layer="262" to-port="0"/>
+	</edges>
+	<meta_data>
+		<MO_version value="2022.1.0-7019-cdb9bec7210-releases/2022/1"/>
+		<Runtime_version value="2022.1.0-7019-cdb9bec7210-releases/2022/1"/>
+		<legacy_path value="False"/>
+		<cli_parameters>
+			<caffe_parser_path value="DIR"/>
+			<compress_fp16 value="False"/>
+			<data_type value="FP32"/>
+			<disable_nhwc_to_nchw value="False"/>
+			<disable_omitting_optional value="False"/>
+			<disable_resnet_optimization value="False"/>
+			<disable_weights_compression value="False"/>
+			<enable_concat_optimization value="False"/>
+			<enable_flattening_nested_params value="False"/>
+			<enable_ssd_gluoncv value="False"/>
+			<extensions value="DIR"/>
+			<framework value="onnx"/>
+			<freeze_placeholder_with_value value="{}"/>
+			<input_model value="DIR/second_half.onnx"/>
+			<input_model_is_text value="False"/>
+			<k value="DIR/CustomLayersMapping.xml"/>
+			<layout value="()"/>
+			<layout_values value="{}"/>
+			<legacy_mxnet_model value="False"/>
+			<log_level value="ERROR"/>
+			<mean_scale_values value="{}"/>
+			<mean_values value="()"/>
+			<model_name value="second_half"/>
+			<output_dir value="DIR"/>
+			<placeholder_data_types value="{}"/>
+			<progress value="False"/>
+			<remove_memory value="False"/>
+			<remove_output_softmax value="False"/>
+			<reverse_input_channels value="False"/>
+			<save_params_from_nd value="False"/>
+			<scale_values value="()"/>
+			<silent value="False"/>
+			<source_layout value="()"/>
+			<static_shape value="False"/>
+			<stream_output value="False"/>
+			<target_layout value="()"/>
+			<transform value=""/>
+			<use_legacy_frontend value="False"/>
+			<use_new_frontend value="False"/>
+			<unset unset_cli_parameters="batch, counts, disable_fusing, finegrain_fusing, input, input_checkpoint, input_meta_graph, input_proto, input_shape, input_symbol, mean_file, mean_file_offsets, nd_prefix_name, output, placeholder_shapes, pretrained_model_name, saved_model_dir, saved_model_tags, scale, tensorboard_logdir, tensorflow_custom_layer_libraries, tensorflow_custom_operations_config_update, tensorflow_object_detection_api_pipeline_config, tensorflow_use_custom_operations_config, transformations_config"/>
+		</cli_parameters>
+	</meta_data>
+</net>

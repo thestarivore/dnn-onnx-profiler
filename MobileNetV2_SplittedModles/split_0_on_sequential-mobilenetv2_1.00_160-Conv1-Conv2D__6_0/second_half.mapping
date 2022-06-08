@@ -1,0 +1,527 @@
+<?xml version="1.0"?>
+<mapping>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/Conv1/Conv2D__6:0" output_port_id="sequential/mobilenetv2_1.00_160/Conv1/Conv2D__6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/Conv1/Conv2D__6:0" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/Conv1/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/Conv1/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/Conv1/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/bn_Conv1/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/bn_Conv1/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/bn_Conv1/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/Conv1_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/Conv1_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/Conv1_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/expanded_conv_depthwise_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/expanded_conv_depthwise_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/expanded_conv_depthwise_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/expanded_conv_depthwise_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/expanded_conv_depthwise_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/expanded_conv_depthwise_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/expanded_conv_project/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/expanded_conv_project/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/expanded_conv_project/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/expanded_conv_project_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/expanded_conv_project_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/expanded_conv_project_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_1_expand_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_1_expand_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_1_expand_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_1_expand_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_1_expand_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_1_expand_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_1_depthwise_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_1_depthwise_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_1_depthwise_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_1_depthwise_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_1_depthwise_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_1_depthwise_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_1_project/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_1_project/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_1_project/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_1_project_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_1_project_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_1_project_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_2_expand_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_2_expand_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_2_expand_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_2_expand_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_2_expand_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_2_expand_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_2_depthwise_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_2_depthwise_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_2_depthwise_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_2_depthwise_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_2_depthwise_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_2_depthwise_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_2_project/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_2_project/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_2_project/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_2_project_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_2_project_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_2_project_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_2_add/add:0" output_port_id="sequential/mobilenetv2_1.00_160/block_2_add/add:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_2_add/add:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_3_expand/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_3_expand/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_3_expand/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_3_expand_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_3_expand_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_3_expand_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_3_expand_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_3_expand_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_3_expand_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_3_depthwise_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_3_depthwise_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_3_depthwise_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_3_depthwise_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_3_depthwise_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_3_depthwise_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_3_project/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_3_project/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_3_project/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_3_project_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_3_project_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_3_project_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_4_expand_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_4_expand_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_4_expand_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_4_expand_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_4_expand_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_4_expand_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_4_depthwise_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_4_depthwise_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_4_depthwise_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_4_depthwise_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_4_depthwise_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_4_depthwise_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_4_project/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_4_project/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_4_project/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_4_project_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_4_project_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_4_project_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_4_add/add:0" output_port_id="sequential/mobilenetv2_1.00_160/block_4_add/add:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_4_add/add:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_5_expand/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_5_expand/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_5_expand/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_5_expand_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_5_expand_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_5_expand_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_5_expand_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_5_expand_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_5_expand_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_5_depthwise_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_5_depthwise_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_5_depthwise_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_5_depthwise_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_5_depthwise_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_5_depthwise_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_5_project/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_5_project/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_5_project/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_5_project_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_5_project_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_5_project_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_5_add/add:0" output_port_id="sequential/mobilenetv2_1.00_160/block_5_add/add:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_5_add/add:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_6_expand/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_6_expand/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_6_expand/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_6_expand_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_6_expand_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_6_expand_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_6_expand_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_6_expand_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_6_expand_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_6_depthwise_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_6_depthwise_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_6_depthwise_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_6_depthwise_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_6_depthwise_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_6_depthwise_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_6_project/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_6_project/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_6_project/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_6_project_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_6_project_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_6_project_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_7_expand_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_7_expand_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_7_expand_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_7_expand_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_7_expand_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_7_expand_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_7_depthwise_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_7_depthwise_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_7_depthwise_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_7_depthwise_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_7_depthwise_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_7_depthwise_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_7_project/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_7_project/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_7_project/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_7_project_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_7_project_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_7_project_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_7_add/add:0" output_port_id="sequential/mobilenetv2_1.00_160/block_7_add/add:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_7_add/add:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_8_expand/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_8_expand/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_8_expand/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_8_expand_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_8_expand_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_8_expand_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_8_expand_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_8_expand_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_8_expand_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_8_depthwise_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_8_depthwise_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_8_depthwise_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_8_depthwise_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_8_depthwise_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_8_depthwise_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_8_project/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_8_project/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_8_project/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_8_project_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_8_project_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_8_project_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_8_add/add:0" output_port_id="sequential/mobilenetv2_1.00_160/block_8_add/add:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_8_add/add:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_9_expand/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_9_expand/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_9_expand/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_9_expand_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_9_expand_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_9_expand_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_9_expand_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_9_expand_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_9_expand_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_9_depthwise_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_9_depthwise_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_9_depthwise_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_9_depthwise_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_9_depthwise_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_9_depthwise_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_9_project/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_9_project/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_9_project/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_9_project_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_9_project_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_9_project_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_9_add/add:0" output_port_id="sequential/mobilenetv2_1.00_160/block_9_add/add:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_9_add/add:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_10_expand/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_10_expand/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_10_expand/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_10_expand_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_10_expand_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_10_expand_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_10_expand_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_10_expand_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_10_expand_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_10_depthwise_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_10_depthwise_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_10_depthwise_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_10_depthwise_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_10_depthwise_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_10_depthwise_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_10_project/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_10_project/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_10_project/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_10_project_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_10_project_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_10_project_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_11_expand_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_11_expand_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_11_expand_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_11_expand_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_11_expand_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_11_expand_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_11_depthwise_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_11_depthwise_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_11_depthwise_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_11_depthwise_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_11_depthwise_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_11_depthwise_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_11_project/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_11_project/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_11_project/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_11_project_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_11_project_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_11_project_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_11_add/add:0" output_port_id="sequential/mobilenetv2_1.00_160/block_11_add/add:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_11_add/add:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_12_expand/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_12_expand/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_12_expand/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_12_expand_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_12_expand_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_12_expand_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_12_expand_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_12_expand_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_12_expand_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_12_depthwise_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_12_depthwise_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_12_depthwise_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_12_depthwise_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_12_depthwise_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_12_depthwise_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_12_project/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_12_project/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_12_project/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_12_project_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_12_project_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_12_project_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_12_add/add:0" output_port_id="sequential/mobilenetv2_1.00_160/block_12_add/add:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_12_add/add:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_13_expand/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_13_expand/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_13_expand/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_13_expand_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_13_expand_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_13_expand_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_13_expand_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_13_expand_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_13_expand_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_13_depthwise_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_13_depthwise_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_13_depthwise_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_13_depthwise_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_13_depthwise_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_13_depthwise_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_13_project/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_13_project/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_13_project/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_13_project_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_13_project_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_13_project_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_14_expand_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_14_expand_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_14_expand_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_14_expand_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_14_expand_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_14_expand_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_14_depthwise_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_14_depthwise_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_14_depthwise_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_14_depthwise_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_14_depthwise_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_14_depthwise_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_14_project/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_14_project/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_14_project/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_14_project_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_14_project_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_14_project_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_14_add/add:0" output_port_id="sequential/mobilenetv2_1.00_160/block_14_add/add:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_14_add/add:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_15_expand/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_15_expand/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_15_expand/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_15_expand_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_15_expand_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_15_expand_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_15_expand_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_15_expand_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_15_expand_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_15_depthwise_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_15_depthwise_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_15_depthwise_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_15_depthwise_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_15_depthwise_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_15_depthwise_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_15_project/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_15_project/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_15_project/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_15_project_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_15_project_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_15_project_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_15_add/add:0" output_port_id="sequential/mobilenetv2_1.00_160/block_15_add/add:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_15_add/add:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_16_expand/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_16_expand/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_16_expand/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_16_expand_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_16_expand_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_16_expand_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_16_expand_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_16_expand_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_16_expand_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_16_depthwise_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_16_depthwise_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_16_depthwise_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_16_depthwise_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/block_16_depthwise_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_16_depthwise_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_16_project/Conv2D_weights_fused_bn" output_port_id="sequential/mobilenetv2_1.00_160/block_16_project/Conv2D_weights_fused_bn" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_16_project/Conv2D_weights_fused_bn" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/block_16_project_BN/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/block_16_project_BN/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/block_16_project_BN/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/Conv_1_bn/FusedBatchNormV3:0" output_port_id="sequential/mobilenetv2_1.00_160/Conv_1_bn/FusedBatchNormV3:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/Conv_1_bn/FusedBatchNormV3:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/mobilenetv2_1.00_160/out_relu/Relu6:0" output_port_id="sequential/mobilenetv2_1.00_160/out_relu/Relu6:0" />
+		<IR name="sequential/mobilenetv2_1.00_160/out_relu/Relu6:0" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="sequential/global_average_pooling2d/Mean:0" output_port_id="sequential/global_average_pooling2d/Mean:0" />
+		<IR name="sequential/global_average_pooling2d/Mean:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="const_axes__604" output_port_id="const_axes__604" />
+		<IR name="const_axes__604" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="sequential/global_average_pooling2d/Mean_Squeeze__605:0" output_port_id="sequential/global_average_pooling2d/Mean_Squeeze__605:0" />
+		<IR name="sequential/global_average_pooling2d/Mean_Squeeze__605:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="sequential/dense/MatMul:0" output_port_id="sequential/dense/MatMul:0" />
+		<IR name="sequential/dense/MatMul:0" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="dense" output_port_id="dense" />
+		<IR name="dense" output_port_id="2" />
+	</map>
+</mapping>

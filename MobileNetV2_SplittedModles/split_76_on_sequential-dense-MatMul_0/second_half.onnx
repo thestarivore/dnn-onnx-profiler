@@ -1,0 +1,16 @@
+onnx.utils.extract_model:Í
+l
+sequential/dense/MatMul:0
+)sequential/dense/BiasAdd/ReadVariableOp:0densesequential/dense/BiasAdd"AddExtracted from {tf2onnx}*5B)sequential/dense/BiasAdd/ReadVariableOp:0JK’¼Z4
+sequential/dense/MatMul:0
+
+	unk__7951
+b 
+dense
+
+	unk__7952
+j4
+sequential/dense/MatMul:0
+
+	unk__7951
+B	

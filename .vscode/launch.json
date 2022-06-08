@@ -1,0 +1,266 @@
+{
+    // Debug with argumets
+    "version": "0.2.0",
+    "configurations": [
+        //onnx_first_inference.py - single image
+        {
+            "name": "onnx_first_inference.py - single image",
+            "type": "python",
+            "request": "launch",
+            "program": "onnx_first_inference.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--onnx_file", "first_half.onnx",
+            ]
+        },
+
+        //onnx_first_inference.py - single image
+        {
+            "name": "onnx_first_inference.py - single image - custom",
+            "type": "python",
+            "request": "launch",
+            "program": "onnx_first_inference.py",
+            "console": "integratedTerminal",
+            "args": [
+                //"--onnx_file", "first_half.onnx",
+                //"--onnx_file", "MobileNetV2_SplittedModles/split_1_on_sequential-mobilenetv2_1.00_160-bn_Conv1-FusedBatchNormV3_0/first_half.onnx",
+                "--onnx_file", "SingleLayerSplits/mobilenetv2_1.00_160_input.onnx",
+            ]
+        },
+
+        //onnx_first_inference.py - batch of images
+        {
+            "name": "onnx_first_inference.py - batch of images",
+            "type": "python",
+            "request": "launch",
+            "program": "onnx_first_inference.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--onnx_file", "MobileNetV2_SplittedModles/split_8_on_sequential-mobilenetv2_1.00_160-block_1_project_BN-FusedBatchNormV3_0/first_half.onnx",
+                "--exec_type", "CPU"
+            ]
+        },
+
+        //onnx_second_inference.py - second inference
+        {
+            "name": "onnx_second_inference.py - second inference",
+            "type": "python",
+            "request": "launch",
+            "program": "onnx_second_inference.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--onnx_file", "second_half.onnx",
+                "--input_file", "results.txt"
+            ]
+        },
+
+        //onnx_second_inference.py - second inference
+        {
+            "name": "onnx_second_inference.py - second inference - path",
+            "type": "python",
+            "request": "launch",
+            "program": "onnx_second_inference.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--onnx_path", "MobileNetV2_SplittedModles",
+                "--input_file", "results.txt"
+            ]
+        },
+
+        // onnx_manager.py -run
+        {
+            "name": "onnx_manager.py -run - batch of images - mobilenet",
+            "type": "python",
+            "request": "launch",
+            "program": "onnx_manager.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--operation", "run", 
+                "--split_layer", "sequential/mobilenetv2_1.00_160/block_5_add/add:0",
+                "--onnx_path", "MobileNetV2_SplittedModles", 
+                "--image_batch", "images/mobilenet_batch",
+                "--image_size_x=160", "--image_size_y=160", "--image_is_grayscale=False",
+                "--minio_bucket=onnx-test4-4", "--oscar_service=onnx-test4-4",
+                "--rep=1"
+            ]
+        },
+
+        // onnx_manager.py - run_all - single image
+        {
+            "name": "onnx_manager.py - run_all - single image - mobilenet",
+            "type": "python",
+            "request": "launch",
+            "program": "onnx_manager.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--operation", "run_all", 
+                "--onnx_file", "mobilenet_v2.onnx", 
+                "--onnx_path", "MobileNetV2_SplittedModles",
+                "--image_file", "images/mobilenet_misc/141340262_ca2e576490_jpg.rf.a9e7a7e679798619924bbc5cade9f806.jpg",
+                "--image_size_x=160", "--image_size_y=160", "--image_is_grayscale=False",
+                "--minio_bucket=onnx-test4-4", "--oscar_service=onnx-test4-4",
+                "--rep=3"
+            ]
+        },
+
+        // onnx_manager.py - run_all - single image
+        {
+            "name": "onnx_manager.py - run_all - single image - BlurryFaces",
+            "type": "python",
+            "request": "launch",
+            "program": "onnx_manager.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--operation", "run_all", 
+                "--onnx_file", "blurry_faces.onnx", 
+                "--onnx_path", "BlurryFaces_SplittedModels",
+                "--image_file", "images/RFB/4_people.jpg",
+                "--image_size_x=640", "--image_size_y=480", "--image_is_grayscale=False",
+                "--minio_bucket=onnx-test4-4", "--oscar_service=onnx-test4-4"
+            ]
+        },
+
+        //onnx_manager.py - run_all - batch of images
+        {
+            "name": "onnx_manager.py - run_all - batch of images - mobilenet",
+            "type": "python",
+            "request": "launch",
+            "program": "onnx_manager.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--operation", "run_all", 
+                "--onnx_file", "mobilenet_v2.onnx", 
+                "--onnx_path", "MobileNetV2_SplittedModles",
+                "--image_batch", "images/mobilenet_batch",
+                "--image_size_x=160", "--image_size_y=160", "--image_is_grayscale=False",
+                "--minio_bucket=onnx-test4-4", "--oscar_service=onnx-test4-4",
+                "--rep=3"
+            ]
+        },
+
+        //onnx_manager.py - plot_results
+        {
+            "name": "onnx_manager.py - plot_results",
+            "type": "python",
+            "request": "launch",
+            "program": "onnx_manager.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--operation", "plot_results", 
+                "--results_file", "time_table_avg.csv", 
+            ]
+        },
+
+        //onnx_manager.py - list layers
+        {
+            "name": "onnx_manager.py - list layers",
+            "type": "python",
+            "request": "launch",
+            "program": "onnx_manager.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--operation", "list_layers", 
+                "--onnx_file", "mobilenet_v2.onnx", 
+            ]
+        },
+
+        //onnx_manager.py - split
+        {
+            "name": "onnx_manager.py - split",
+            "type": "python",
+            "request": "launch",
+            "program": "onnx_manager.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--operation", "split_model", 
+                "--onnx_file", "blurry_faces.onnx",//"multi_input_dnn.onnx",//"mobilenet_v2.onnx", 
+                "--split_layer", "246", //"model_4/dense_4/BiasAdd:0"//"sequential/mobilenetv2_1.00_160/block_14_add/add:0",
+            ]
+        },
+
+        //onnx_manager.py - split all
+        {
+            "name": "onnx_manager.py - split all",
+            "type": "python",
+            "request": "launch",
+            "program": "onnx_manager.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--operation", "split_model_all", 
+                "--onnx_file", "mobilenet_v2.onnx", 
+            ]
+        },
+
+        //onnx_manager.py - split all
+        {
+            "name": "onnx_manager.py - split for EarlyExit DNNs",
+            "type": "python",
+            "request": "launch",
+            "program": "onnx_manager.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--operation", "early_exit_split_model", 
+                "--onnx_file", "inception_v1.onnx", 
+                "--outputs", "output", "auxilliary_output_1", "auxilliary_output_2"
+            ]
+        },
+
+        //onnx_manager.py - multi split
+        {
+            "name": "onnx_manager.py - multi split",
+            "type": "python",
+            "request": "launch",
+            "program": "onnx_manager.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--operation", "multi_split_model", 
+                "--onnx_file", "mobilenet_v2.onnx", 
+                "--split_layers", "sequential/mobilenetv2_1.00_160/block_5_add/add:0","sequential/mobilenetv2_1.00_160/block_11_add/add:0"
+            ]
+        },
+
+        //onnx_manager.py - show_graph
+        {
+            "name": "onnx_manager.py - show_graph",
+            "type": "python",
+            "request": "launch",
+            "program": "onnx_manager.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--operation", "show_graph", 
+                "--onnx_file", "mobilenet_v2.onnx", 
+            ]
+        },
+
+
+        // onnx_manager.py - data_processing
+        {
+            "name": "onnx_manager.py - data_processing",
+            "type": "python",
+            "request": "launch",
+            "program": "onnx_manager.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--operation", "data_processing", 
+                "--image_file", "images/mobilenet_misc/141340262_ca2e576490_jpg.rf.a9e7a7e679798619924bbc5cade9f806.jpg",
+                "--image_size_x=160", "--image_size_y=160", "--image_is_grayscale=False",
+            ]
+        },
+
+        // onnx_manager.py - data_processing - batch
+        {
+            "name": "onnx_manager.py - data_processing - batch",
+            "type": "python",
+            "request": "launch",
+            "program": "onnx_manager.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--operation", "data_processing", 
+                "--image_batch", "images/mobilenet_batch",
+                "--image_size_x=160", "--image_size_y=160", "--image_is_grayscale=False",
+            ]
+        },
+
+        
+    ]
+}

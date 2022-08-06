@@ -104,13 +104,14 @@ def onnx_search_and_run_second_half(onnx_models_path, onnx_model_file, input_fil
   input_tensor = data["result"]
   input_layer = data["splitLayer"].replace("/", '-').replace(":", '_')
   isNoSplitCase = (data["splitLayer"] == "NO_SPLIT")  #No split case is when we don't have to pick a model based on the split, but instead we use the whole model
+  isProfilingCase = (data["splitLayer"] == "PROFILING")  #Profiling case is when we don't have to pick a model based on the split, but instead we use the whole model and activate the onnxruntime profiling
   execTime1 = data["execTime1"]
-  tensorLenght = data["tensorLenght"]
+  tensorLength = data["tensorLength"]
   tensorSaveTime = data["tensorSaveTime"]
   #print(data)
 
   tensorLoadTime = time.perf_counter() - startTime
-  startTime = time.perf_counter()
+  #startTime = time.perf_counter() 
 
   #Iterate through the subdirectories to find the ONNX model splitted at our selected layer
   #print("Search for: " + input_layer)
@@ -130,7 +131,7 @@ def onnx_search_and_run_second_half(onnx_models_path, onnx_model_file, input_fil
     onnx_file = onnx_model_file
 
   #No split case --> Get the full model instead of a splitted part
-  if isNoSplitCase:
+  if isNoSplitCase or isProfilingCase:
     if onnx_models_path == None:
       onnx_file = data["fullModelFile"]
     else:
@@ -142,6 +143,8 @@ def onnx_search_and_run_second_half(onnx_models_path, onnx_model_file, input_fil
   model_input = onnx_model.graph.input[0].name 
   model_output = onnx_model.graph.output[0].name
 
+  startTime = time.perf_counter()
+
   # Run the second model with the results from the first model as input (Using sclblonnx)
   '''g = so.graph_from_file(onnx_file)
   inputs = {model_input: input_tensor}
@@ -150,22 +153,56 @@ def onnx_search_and_run_second_half(onnx_models_path, onnx_model_file, input_fil
                   outputs=[model_output]
                   )'''
   
+  #Enable Profiling via ONNXRUNTIME
+  so = onnxruntime.SessionOptions()
+  if isProfilingCase:
+    so.enable_profiling = True
+  
   # Run the second model with the results from the first model as input (Using onnxruntime)
-  ort_session = onnxruntime.InferenceSession(onnx_file, providers=EP_list, provider_options=[{'device_type' : device}])
+  ort_session = onnxruntime.InferenceSession(onnx_file, so, providers=EP_list, provider_options=[{'device_type' : device}])
   print('Providers:' + str(ort_session.get_providers()))
   #print('Provider Options:' + str(ort_session.get_provider_options()))
-  result = ort_session.run(None, {model_input: input_tensor})    # error over here
+  result = ort_session.run(None, {model_input: input_tensor})  
 
-  endTime = time.perf_counter()
+  endTime = time.perf_counter()  
+
+  # Profiling ends
+  profilingTable = []
+  if isProfilingCase:
+    try:
+      prof = ort_session.end_profiling()
+      # and is collected in that file:
+      print(prof)
+
+      # Import the list of nodes execution logs
+      with open(prof, "r") as f:
+        profilingTable = json.load(f)
+      #print(js[:3])
+
+      # a tool to convert it into a table and then into a csv file
+      #df = DataFrame(OnnxWholeSession.process_profiling(profilingTable))
+      #df.to_csv("inference_profiling.csv", index=False)
+    except Exception as e:
+      print("Error while saving the profiling during first inference!" + str(e))  
+      isProfilingCase = False
+
+  
   dictData = {
     "splitLayer": input_layer,
     "execTime1": execTime1,             #1st Inference Execution Time
     "execTime2": endTime-startTime,     #2nd Inference Execution Time
     "result": result[0],
-    "tensorLenght": tensorLenght,
+    "tensorLength": tensorLength,
     "tensorSaveTime": tensorSaveTime,
     "tensorLoadTime": tensorLoadTime
   }
+
+  #Get the InferenceExecutionTime from the profiling if present
+  if isProfilingCase:
+    execTimeFromProfiling = (profilingTable[len(profilingTable)-1]['dur'] +
+                              profilingTable[0]['dur'] + profilingTable[1]['dur']) / 1000000
+    dictData["execTime2"] = execTimeFromProfiling
+    dictData["profilingTableCloud"] = profilingTable
 
   if results_file != None:
     with open(results_file, 'wb') as f:

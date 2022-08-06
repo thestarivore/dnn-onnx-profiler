@@ -1,0 +1,24 @@
+# Python cache files
+__pycache__/
+
+# Folders of datasets
+inputs/*/*
+
+# Library output files
+output*
+outputs/
+
+# Folders to ignore
+log/
+etc/
+local/
+old/
+temp/
+tmp/
+
+# Miscellaneous
+*swp
+/.idea/
+.mypy_cache/
+*.pdf
+*.png

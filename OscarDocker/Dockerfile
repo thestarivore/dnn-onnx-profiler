@@ -36,7 +36,7 @@ RUN cd /opt && gdown --folder --no-cookies https://drive.google.com/drive/folder
 RUN cd /opt/DownloadONNXSplitter2 && gdown --id 177YxmYcOjFrceI9GiAVAbvgGH9LRwi6s           #download MobileNetV2_SplittedModels.zip
 RUN cd /opt/DownloadONNXSplitter2 && unzip MobileNetV2_SplittedModels.zip
 RUN cd /opt/DownloadONNXSplitter2 && rm MobileNetV2_SplittedModels.zip
-RUN cd /opt/DownloadONNXSplitter2 && cp mobilenet_v2.onnx MobileNetV2_SplittedModles
+RUN cd /opt/DownloadONNXSplitter2 && cp mobilenet_v2.onnx MobileNetV2_SplittedModels
 RUN cd /opt/DownloadONNXSplitter2 && gdown --folder https://drive.google.com/drive/folders/1yFJA4q7Q8764qSZaIjSLOGnmLN9s70UR
 
 #BlurryFaces
@@ -48,7 +48,7 @@ RUN cd /opt/DownloadONNXSplitter2 && cp blurry_faces.onnx BlurryFaces_SplittedMo
 
 #VGG16
 ##RUN cd /opt/DownloadONNXSplitter2 && gdown --folder https://drive.google.com/drive/folders/15NrDJUxEddk2QhduJzY7WIozWo5TctvG
-RUN cd /opt/DownloadONNXSplitter2 && gdown --id 1nZrMA7k_IPx0ebkUxN5agxi-5FLSB-i3           #download VGG16_SplittedModels.zip  
-RUN cd /opt/DownloadONNXSplitter2 && unzip VGG16_SplittedModels.zip
-RUN cd /opt/DownloadONNXSplitter2 && rm VGG16_SplittedModels.zip
-RUN cd /opt/DownloadONNXSplitter2 && cp vgg16.onnx VGG16_SplittedModels
+#RUN cd /opt/DownloadONNXSplitter2 && gdown --id 1nZrMA7k_IPx0ebkUxN5agxi-5FLSB-i3           #download VGG16_SplittedModels.zip  
+#RUN cd /opt/DownloadONNXSplitter2 && unzip VGG16_SplittedModels.zip
+#RUN cd /opt/DownloadONNXSplitter2 && rm VGG16_SplittedModels.zip
+#RUN cd /opt/DownloadONNXSplitter2 && cp vgg16.onnx VGG16_SplittedModels

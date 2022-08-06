@@ -4,6 +4,8 @@
     echo   "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
       $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     sudo apt update && sudo apt install -y qemu-system-arm
+    sudo apt install sshpass
+
       
    
    python3 -m pip install --upgrade pip setuptools wheel
@@ -24,15 +26,17 @@
    python3 -m pip install pandas
 
    //in oscar-splitter folder:
-   chmod 755 ./oscar-cli-arm64
+   chmod 755 ./oscar-cli-arm64						//https://github.com/grycap/oscar-cli/releases
    chmod 755 ./mc-arm64
    
+   //set cluster
+   ./oscar-cli-arm64 cluster add kind https://localhost oscar --password-stdin
    //set .oscar-cli/config.yaml:
    oscar:
      kind:
        endpoint: https://192.168.1.14
        auth_user: oscar
-       auth_password: themanoutoftime
+       auth_password: yourpassword
        ssl_verify: false
        memory: 256Mi
        log_level: DEBUG

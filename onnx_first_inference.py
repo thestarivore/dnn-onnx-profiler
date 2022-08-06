@@ -8,20 +8,15 @@ import numpy as np
 import argparse, sys
 import pickle
 import time
-import os
-import collections
 import json
 from mlprodict.onnxrt.ops_whole.session import OnnxWholeSession
 from pandas import DataFrame
 #import openvino.runtime as ov
 #from openvino.inference_engine import IECore, Blob, TensorDesc
-from pathlib import Path
 #from openvino.preprocess import PrePostProcessor, ResizeAlgorithm
 #from openvino.runtime import Core, Layout, Type
+from onnx_utils import *
 
-#Default files for input/output
-INPUT_PICKLE_FILE = 'input.txt'
-OUTPUT_PICKLE_FILE = 'results.txt'
 MAX_NUMBER_OF_INPUTS = 10
 
 # Prefer ACL Execution Provider over CPU Execution Provider
@@ -117,7 +112,7 @@ def onnx_run_first_half_from_file(onnx_file, EP_list = CPU_EP_list, device = Non
   # Run at inference the First Half of the Splitted Model
   onnx_run_first_half(onnx_file, inputData, True, EP_list, device, xml_file=xml_file)
 
-def onnx_run_first_half(onnx_file, inputData, saveOutput = False, EP_list = CPU_EP_list, device = None, profiling = False, xml_file = None, ignore_onnx_load_time = False):
+def onnx_run_first_half(onnx_file, inputData, saveOutput = False, EP_list = CPU_EP_list, device = None, profiling = False, xml_file = None):
   '''
   Run at inference the First Half of the Splitted Model on an input array and save the results on an output file
 
@@ -127,18 +122,16 @@ def onnx_run_first_half(onnx_file, inputData, saveOutput = False, EP_list = CPU_
   :param EP_list: the Execution Provider used at inference (CPU (default) | GPU | OpenVINO | TensorRT | ACL)
   :param device: specifies the device type such as 'CPU_FP32', 'GPU_FP32', 'GPU_FP16', etc..
   :param profiling: if True enables profiling, which generates a file with all the 
-  :returns: the results of the inference, the execution time and split layer used
+  :returns: the results of the inference, the execution time and split layer used (and the profiling table if the profiling is enabled)
   '''
-  startTime = time.perf_counter()
+  #startTime = time.perf_counter()
 
   #Get the input and output of the model
   onnx_model = onnx.load(onnx_file)
   model_output = onnx_model.graph.output[0].name 
   #model_num_inputs = len(onnx_model.graph.input)
 
-  #Start counting the time after the model load if ignore_onnx_load_time is True
-  if ignore_onnx_load_time:
-    startTime = time.perf_counter()
+  startTime = time.perf_counter()
 
   #To get the inputs we must ignore the initializers, otherwise it would seem like we have a lot of inputs in some cases
   input_all = [node.name for node in onnx_model.graph.input]
@@ -260,30 +253,41 @@ def onnx_run_first_half(onnx_file, inputData, saveOutput = False, EP_list = CPU_
   endTime = time.perf_counter()
 
   # Profiling ends
+  profilingTable = []
   if profiling:
-    prof = ort_session.end_profiling()
-    # and is collected in that file:
-    print(prof)
+    try:
+      prof = ort_session.end_profiling()
+      # and is collected in that file:
+      print(prof)
 
-    # what does it look like?
-    with open(prof, "r") as f:
-        js = json.load(f)
-    print(js[:3])
+      # Import the list of nodes execution logs
+      with open(prof, "r") as f:
+        profilingTable = json.load(f)
+      #print(js[:3])
 
-    # a tool to convert it into a table and then into a csv file
-    df = DataFrame(OnnxWholeSession.process_profiling(js))
-    df.to_csv("inference_profiling.csv", index=False)
+      # a tool to convert it into a table and then into a csv file
+      df = DataFrame(OnnxWholeSession.process_profiling(profilingTable))
+      df.to_csv("inference_profiling.csv", index=False)
+    except Exception as e:
+      print("Error while saving the profiling during first inference!" + str(e))  
+      profiling = False
 
   #Build Return Data
   returnData = {
     "splitLayer": model_output,
     "execTime1": endTime-startTime - openVinoPreparationTime,   #1st Inference Execution Time
     "result": result[0],
-    "tensorLenght": result[0].size,
+    "tensorLength": result[0].size,
     "unusedInputs": unusedInputs,
     "tensorSaveTime": 0
   }
 
+  #Get the InferenceExecutionTime from the profiling if present
+  if profiling:
+    execTimeFromProfiling = (profilingTable[len(profilingTable)-1]['dur'] +
+                              profilingTable[0]['dur'] + profilingTable[1]['dur']) / 1000000
+    returnData["execTime1"] = execTimeFromProfiling
+    
   print("ExecTime: " + str(returnData["execTime1"])) 
 
   #Also save the Profiling File Name
@@ -303,7 +307,7 @@ def onnx_run_first_half(onnx_file, inputData, saveOutput = False, EP_list = CPU_
     with open(OUTPUT_PICKLE_FILE, 'wb') as f:
       pickle.dump(returnData, f)
       
-  return returnData
+  return returnData, profilingTable
 
 def runOnOpenVINO(xml_file, inputData): #todo:finish description
   # --------------------------- Step 1. Initialize OpenVINO Runtime Core ------------------------------------------------

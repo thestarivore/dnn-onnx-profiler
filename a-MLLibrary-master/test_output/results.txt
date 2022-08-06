@@ -1,0 +1,26 @@
+      Evaluate experiments (sequentially)
+<--
+   Printing results for run 0
+         Best result for Technique.XGBOOST - Configuration is ['min_child_weight_1', 'gamma_0', 'n_estimators_50', 'learning_rate_0.01', 'max_depth_1'] - (Training MAPE is 1.696541 - HP Selection MAPE is 1.696541) - Validation MAPE is 1.696541
+   Overall best result is ['XGBoost', 'min_child_weight_1', 'gamma_0', 'n_estimators_50', 'learning_rate_0.01', 'max_depth_1']
+   Metrics for best result:
+-->
+      MAPE: (Training 1.696541 - HP Selection 1.696541) - Validation 1.696541
+      RMSE: (Training 0.219913 - HP Selection 0.219913) - Validation 0.219913
+      R^2 : (Training -42.910102 - HP Selection -42.910102) - Validation -42.910102
+<--
+   Building the final regressors
+      Validation metrics on full dataset for Technique.XGBOOST:
+-->
+         MAPE: 1.696541
+         RMSE: 0.219913
+         R^2 : -42.910102
+<--
+   Built the final regressors
+   Best models:
+-->
+      Technique.XGBOOST:
+      XGBoost weights: {
+}
+<--
+Execution Time : 89.1186888217926

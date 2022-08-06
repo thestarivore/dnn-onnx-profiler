@@ -1,0 +1,133 @@
+    sudo apt-get update
+    sudo apt install python3-pip
+    pip3 install --upgrade setuptools wheel
+    pip3 install -U pip
+    pip3 install packaging
+    
+    //if python3.6.9 is installed
+    pip3 install onnx==1.10.0
+    pip3 install onnx_opcounter      //this will force the installation of numpy and onnxruntime (uninstall onnxruntime afterwards: pip3 uninstall onnxruntime)
+    pip3 install numpy==1.19.4   		//numpy==1.19.5 doesn't work with onnxruntime
+    pip3 install onnx2json
+    pip3 install pillow
+
+
+    
+    sudo apt-get install     ca-certificates     curl     gnupg     lsb-release
+    curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    echo   "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+      $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt update && sudo apt install -y qemu-system-arm
+    sudo apt install sshpass
+
+   
+   ##download onnxruntime from https://elinux.org/Jetson_Zoo#ONNX_Runtime  (for the right version consult your version of CUDA installed)
+   #for the right version consult your version of CUDA installed: https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#:~:text=Note%20that%20ONNX%20Runtime%20Training,x%20version.
+   #In our case CUDA==10.2 --> so we must download onnxruntime==1.6
+   pip3 install onnxruntime_gpu-1.6.0-cp36-cp36m-linux_aarch64.whl
+
+   NOTE: If it crashes when using onnxruntime.SessionOptions, then it's probably not installed correctly, therefore reinstall forcibly it:
+	pip3 install --force-reinstall onnxruntime_gpu-1.6.0-cp36-cp36m-linux_aarch64.whl --user
+
+
+   
+   #Install also the right version of tensorflow from NVIDIA's repositories: https://developer.download.nvidia.com/compute/redist/jp/v46/tensorflow/
+   pip3 install tensorflow-2.5.0+nv21.7-cp36-cp36m-linux_aarch64.whl
+#IMPORTANT: the actual version to download must be chosen based on the JetPack version installed
+# u can find the JP version by running: sudo apt-cache show nvidia-jetpack
+# the download link will become (substitute "XX" with your version): https://developer.download.nvidia.com/compute/redist/jp/vXX/tensorflow/
+# if failing because of h5py packet, follow: https://forums.developer.nvidia.com/t/solution-dpkg-error-processing-package-nvidia-l4t-bootloader-configure/208627
+
+   sudo apt install vsc				//an old python addon is required on VisualStudioCode with python3.6.9 (v2021.12.1559732655)
+
+   pip3 install git+https://github.com/onnx/sklearn-onnx.git
+
+   pip3 install matplotlib
+   pip3 install pandas
+
+   //in oscar-splitter folder:
+   chmod 755 ./oscar-cli-arm64						//https://github.com/grycap/oscar-cli/releases
+   chmod 755 ./mc-arm64
+   
+   //set cluster
+   ./oscar-cli-arm64 cluster add kind https://localhost oscar --password-stdin
+   //set .oscar-cli/config.yaml:
+   oscar:
+     kind:
+       endpoint: https://192.168.1.18
+       auth_user: oscar
+       auth_password: yourpassword
+       ssl_verify: false
+       memory: 256Mi
+       log_level: DEBUG
+   default: kind
+   
+   //add in .mc-arm64/config.json:
+   {
+	"version": "10",
+	"aliases": {
+		"gcs": {
+			"url": "https://storage.googleapis.com",
+			"accessKey": "YOUR-ACCESS-KEY-HERE",
+			"secretKey": "YOUR-SECRET-KEY-HERE",
+			"api": "S3v2",
+			"path": "dns"
+		},
+		"local": {
+			"url": "http://192.168.1.18:30300",
+			"accessKey": "minio",
+			"secretKey": "yourpassword",
+			"api": "S3v4",
+			"path": "auto"
+		},
+		"play": {
+			"url": "https://play.min.io",
+			"accessKey": "Q3AM3UQ867SPQQA43P2F",
+			"secretKey": "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG",
+			"api": "S3v4",
+			"path": "auto"
+		},
+		"s3": {
+			"url": "https://s3.amazonaws.com",
+			"accessKey": "YOUR-ACCESS-KEY-HERE",
+			"secretKey": "YOUR-SECRET-KEY-HERE",
+			"api": "S3v4",
+			"path": "dns"
+		}
+	}
+}
+
+   
+   curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/arm64/kubectl"
+   sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+   kubectl version --clinet
+  
+  //use kubectl, config in .kube.config.json (copy from server):
+  apiVersion: v1
+   clusters:
+   - cluster:
+       certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM1ekNDQWMrZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRJeE1USXhNekF4TXpReU0xb1hEVE14TVRJeE1UQXhNelF5TTFvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTUZkClhDL200UU5uNU9aKzhBeEs1TVp1eS9wRjhMT1cxbSs3WE1sd1VFMzlFS1haZmZ2ZUpsZWJ4RkMxSFR1VllFMkkKb3BsVTNNdS8vRE50RlA4NmtNUCtOK3lrclIydGZlWXJFbGVVemtDRXE5U1g3U3NIamFBWUdNejBrazZpb29PLwo5cHRQZ3NrMmlLR1ZiNXBxaDV2WHdyTFVISUhEQWhBaTA1TW1TMDR0NFNleVZaeDRMcDdxWlJJVytac1dUYXNOCm5GcllndXRxUHdWSCs1UGRwM1I5bE5LaHExeEVwbmlzdGZWMHdqQlNiUlhtWWtDOFZwZ3pMSzZ4Mm5PRTFDUDkKRS9WV0E3RVgwOUpmMnMwZytHclhzTy9EUmhPMlB1Mncyd0c2UmUxWVAzemZKMDlRQUxDL0owWC83cTBCaUp5Nwo0TitVSjJtZ1ZwTkdkaks3VUZFQ0F3RUFBYU5DTUVBd0RnWURWUjBQQVFIL0JBUURBZ0trTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0hRWURWUjBPQkJZRUZMR1BXQUxScldMQWJNdGp1M1BGQ000TlNVeWlNQTBHQ1NxR1NJYjMKRFFFQkN3VUFBNElCQVFCUkFlaTdRMFlRM2phZWtZcjAzNHNWS2x2TnJmbVNwMW5KWk5ZZFA3SFdnaUgyOFl4aAp1c1dxaS9DQ2hPaldTRjE1M2oyakF1dERtcnJyVU1xTmFlY3JEQ0JCenNZb2hCVGwxbm5SUmorRHJCYnZPeGlFClpDQlBCVWVtTU94RWNJMFE2WmVwcHloMUJ6QmlYSEFxZHkvZ0ZtZ2E1SXhJTHpFTnVvNmU5MHVKWUg0YVo5d0wKOGZjQ2w1aXl5MEFGTGFBNEVidEpsZWJHTy9VaEkxclBKWStPeDRnRTFvN0ZIdzM1ZkdpOXg3QitCKzhvUzh0SAp2OXB4MnM0RHNFNC9qcmMrRFB1emxNUHRHcVkyRVhUMjEzSzRjbythUHR0aldQV09qY1dhTTN0ejMrbU56NWRNClErSkZGa2VzbW5KRXl2TTY0b3pjUTZGUnZqeHU5T2g4dHJCQQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+       server: https://127.0.0.1:44021
+     name: kind-kind
+   contexts:
+   - context:
+       cluster: kind-kind
+       user: kind-kind
+     name: kind-kind
+   current-context: kind-kind
+   kind: Config
+   preferences: {}
+   users:
+   - name: kind-kind
+     user:
+       client-certificate-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURFekNDQWZ1Z0F3SUJBZ0lJWmVjU2tQenlFTjB3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TVRFeU1UTXdNVE0wTWpOYUZ3MHlNakV5TVRNd01UTTBNalphTURReApGekFWQmdOVkJBb1REbk41YzNSbGJUcHRZWE4wWlhKek1Sa3dGd1lEVlFRREV4QnJkV0psY201bGRHVnpMV0ZrCmJXbHVNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQXNRQUNkNHBGY0FtM2UvMDAKZkxOZGV0K0xrVVJPd2JEWk45YTZIZldhaERsUUZiNloveXhpdkhLZDE0a1R0WEk3TUdXR2d2Y01keGdESkdqQQoxRGZsUVV6di9JS1ZkNHRXelcvam5WMzduOXJkOVV3bzMvQ2tTeHVXS2V1eS9nUXorUXJNS0d2K3pUOUtGZzZmCmROc1hsUXlBbzFMcm9jTnQwYVByQlptNkMyNU5zSnNlUG9HbmZUbGo0MTg0V1hpS050eEhDS2Y3OVpUOGowSDcKUVpWRFl4TWk2eUF6MTI4MzBmR3VCV1didHQrelV1VHovT1U5MFRQNGcrdVB3cE1xWUpEaFN4MzZucm8yMDYyVwo2TWVma2JnVk5WUmJKbFBzemNtb29VcTZWc0F3aCtoOFgxczNPOW02ckdrOE00MGJMQzJDanJiV2FxNU96UUdVCmJhNG1Od0lEQVFBQm8wZ3dSakFPQmdOVkhROEJBZjhFQkFNQ0JhQXdFd1lEVlIwbEJBd3dDZ1lJS3dZQkJRVUgKQXdJd0h3WURWUjBqQkJnd0ZvQVVzWTlZQXRHdFlzQnN5Mk83YzhVSXpnMUpUS0l3RFFZSktvWklodmNOQVFFTApCUUFEZ2dFQkFBZFNLbEdvMU1QWGh5Z3dPbC9VL0ZWQ0FJS0lESUJGUWZBMW9qeXlXaUtVdkZwT3d0akMyYVdmCnd5SUlWL3ZSNnlZQWtWamprbmM1NFpFNG92aHRQbisrdVNRemY2RkJQWUVsL25La2VCazlWT2ZQQlVLVzB4QXoKcWJGSk4xRWNIMGplNkFFZlArWVl6THN4OWNFM0k2dEh0Z0FVV1dRQjZ4K2JlSjFWR003eFdyd2tHdWxLTGtsbwpxQ014cEJsaW9WbEpPTW15WnkrZERmZHZqallxYldBOHZFQkNxQjFmSGp0SXNQTWU4UG9IbXU0dDFpbUc1OXNjCnMxSlQwTVZwbWJnaUtmY3hTUHZYclQxWThFbkpiQ0RuN3FkVFU4enc4aklUTVFaMlBpTFhMUHVwRXZYNGxZbmcKaXNQNk00M2o3ak4ySUZFYTM2eitwMWVMdURWa1VOdz0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+       client-key-data: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBc1FBQ2Q0cEZjQW0zZS8wMGZMTmRldCtMa1VST3diRFpOOWE2SGZXYWhEbFFGYjZaCi95eGl2SEtkMTRrVHRYSTdNR1dHZ3ZjTWR4Z0RKR2pBMURmbFFVenYvSUtWZDR0V3pXL2puVjM3bjlyZDlVd28KMy9Da1N4dVdLZXV5L2dReitRck1LR3YrelQ5S0ZnNmZkTnNYbFF5QW8xTHJvY050MGFQckJabTZDMjVOc0pzZQpQb0duZlRsajQxODRXWGlLTnR4SENLZjc5WlQ4ajBIN1FaVkRZeE1pNnlBejEyODMwZkd1QldXYnR0K3pVdVR6Ci9PVTkwVFA0Zyt1UHdwTXFZSkRoU3gzNm5ybzIwNjJXNk1lZmtiZ1ZOVlJiSmxQc3pjbW9vVXE2VnNBd2graDgKWDFzM085bTZyR2s4TTQwYkxDMkNqcmJXYXE1T3pRR1ViYTRtTndJREFRQUJBb0lCQVFDQnBuVW9KUE5wOXVRZApBVUxpR094ZlpjR3czYTBtdWFqUyt3bUhpbkR0YTZIYTI2dW51MVp6blMwN1JPQlg1MTJ0dktCRDdEeUlPK0dKCldPWHVUU2N6cHV5Zk5QUFJCaExHRnJCT2hCb2RaTTl5cjUrOU1XTFcxVlV3VGNMbHlDUmR4dWYycit5TFlWR2UKU0lYS3JmVmZLekpLOENGRGM0aE1xRm90MXdYcytsME1sOGxyRnk1RFRDU0xhVU8rc2JCaElOeHkxMXFnOWFmUQpQT3pqcGpVdHhMaHhkUHlEeEJmQ0UraXJjd1U0YTdNVFdEdk5mejY3T0poQkRUdjgxckdTcWg0dkNxWHJBR2puCmg4Z3BlZmhMMEg1WUJVTlRmaGpTQ1ZkcmZTbHNxM3VlWlo3aWFWSDhPSnczTlNpZ3lSWko3Tzd1MHJ6YmVSRTEKWnpGZlFHc0JBb0dCQU1NaGMyQ1FyTHg0aVhlZm1XdDBTRUxGZDlCSU9VNkJTUW9CS0RZd2J2OWpPbTZ3WUpuMQpwQWdES3RpRFVWOGRWRER5QTN0MVliMUZoOU1nSVhYMkhLb2QvZzhjRzd0MmhOUE56V3NjWGcrQTJtWTNuRGlxCkR2QWU2MlpMT1VtT3ZsTzNteE5NV213akFpaE5lOXB5a0NZVlZvQWhRREpLd3QvZEN5L3BmOTZCQW9HQkFPZzIKczRvbUtFWFdtc0NyOGJSTSs4Uk9PaEN4ejVmTDA4NTVYT1hyVHJ5cmJJQTJicE0wNlpkcGVoNDJteHdaZDlMSAp6cHBJTFEvWjBUWXZRazBuSjJCYmd1QjRJMWVXb0pZNUtFYjN0VjZSZE5NRm5TZUNuUHlqdzdYS3NBTGJqV29iCk5JN21RbzkxSzYyUnBwR2E3Snl0VWF0aHgvVCt3V21xZ3ZYbGFoaTNBb0dBWTlhdHJlN1lNdWFKajRjOWZGbFcKejdNeGhvUXRyaGxBUWJvdDFPd2JIdGlxZ1JBRm5VQ3QyTnVtQkhuTUhKcHBCVklPcmhCMUhkNkJqR2lZTmo3aQprN2djMGFaVUdpcWQ4N0VOTll5aUk5U042bGJ4dTV4bllEeXh2UGtvS3BhNmt5TVNXV0Zyc29DSERnLzNHdUliCkZ5RTd6UHMyV1lVZkNHT1U0Y0xiQmdFQ2dZQVVuRzVaTDhQWlZ4QUxVL2V6TWpZU21ZTHI0bXh6bzhMY0M4ZWsKSEx1ellWL1REWUhKRFNSQ3JUa0tuM3dyQlZPdVlNL0V2KzFILytSaTg5VGx0amozZzRmZFZxeUVaTGxDUERhSAovZ3FhSnowQVVmbzkvSWprbjhDS1RVQk1NS0tmcldSLzNvNC8zMzJOL1dTVWZmVE1mMUhGYlh0ckVvV21WRjBsCmFFUi9od0tCZ0ZjbW02aEpIZTJGYzBWZDYxdTgvbnM5NG1kVDlYWURvdGZ5NkE2MEJybTdmRGNsbEhOZVpEWnkKVExCTmNrUy9URnVRcjdIVy9RNXFzRGF2aWNLdW80VHpFeldjNzhwaGlLQTM5RTVMbTJIYlhhM01Bb3JOZXQ1dAppMVRvcFpwZFhzaGx4NEdOZUNoSGxRcXBwSWdzMWhGU1ltYnRzVG42d1ZvVVhURU9kRVBqCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg==
+
+  //start ssh connection for kubectl:
+  ssh -fNL 44021:192.168.1.14:44021 starivore@192.168.1.18
+  kubectl get pods --namespace=oscar-svc
+  
+  //from now one, for every new terminal:
+  ssh -q starivore@192.168.1.18
+  kubectl get pods --namespace=oscar-svc
+  

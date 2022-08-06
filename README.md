@@ -6,6 +6,12 @@ A Tool for splitting ONNX models and running & profiling inference divided betwe
 
 The tool accepts models in the form of **.onnx** files, so after designing and training your network with your preferred framework (*Tensorflow, Caffe, PyTorch, etc.*.) you must convert it into onnx. In fact the advantage of using onnx (apart from inference speed) is that it's framework independent. Some examples of Jupiter Notebooks can be found on the "*Notebooks*" folder.
 
+*IMPORTANT*: For PyTorch, the model must be exported with **export_params=True**, otherwise profiling will fail for lack of node information. Example:
+
+```
+torch.onnx.export(net, dummy_input, model_path, export_params=True, verbose=False, input_names=['input'], output_names=['scores', 'boxes'])
+```
+
 Notes and Tutorial about how to setup OSCAR and install everything on Embedded devices can be found in the "*Documentation*" folder.
 
 For the Cloud architecture we use [OSCAR](https://github.com/grycap/oscar), while for the edge it might be any AMD64 or ARM64 based device and any hardware accelerator (tested on: *Intel's NeuralComputeStick2, GoogleCoral, Jetson Nano, Jetson TX2, Jetson AGX Xavier*).

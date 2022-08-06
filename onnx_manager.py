@@ -7,35 +7,23 @@ from skl2onnx.helpers.onnx_helper import enumerate_model_node_outputs
 from skl2onnx.helpers.onnx_helper import load_onnx_model
 import datetime
 import numpy as np
-import argparse, sys
+import argparse
 import time
 import json
 import os
 import csv
 from onnx_first_inference import onnx_run_first_half
-import matplotlib.pyplot as plt
-import pandas as pd
-import shutil
 import pickle
 from tensorflow.keras.preprocessing.image import load_img
 from tensorflow.keras.preprocessing.image import img_to_array
 import onnxruntime
 from onnxruntime.quantization import quantize_static, quantize_dynamic, CalibrationDataReader, QuantFormat, QuantType
-from argparse import ArgumentParser
-import asyncio
 from onnx_opcounter import calculate_params
 from onnx2json import convert
-
-RESULTS_CSV_FILE = 'time_table.csv'
-RESULTS_CSV_FILE2 = 'time_table_2.csv'
-FINAL_RESULTS_CSV_FILE = 'time_table_final.csv'
-AVG_RESULTS_CSV_FILE = 'time_table_avg.csv'
-INPUT_PICKLE_FILE = 'input.txt'
-OUTPUT_PICKLE_FILE = 'results.txt'
-NEUTRON_INSTALLATION_PATH = '/snap/bin/neutron'
-
-MODEL_SPLIT_FIRST_FILE = 'first_half.onnx'
-MODEL_SPLIT_SECOND_FILE = 'second_half.onnx'
+from onnx_splitter import (onnx_model_split, onnx_model_split_all, onnx_model_multi_split, onnx_model_early_exits_split, 
+                           onnx_model_split_all_singlenode, onnx_show_graph)
+from onnx_utils import *
+from packaging import version
 
 # Prefer ACL Execution Provider over CPU Execution Provider
 ACL_EP_list       = ['ACLExecutionProvider']
@@ -61,7 +49,7 @@ def main():
     --operation OPERATION
                           Select the operation to be performed on the ONNX Model
                           (list_layers | print_model | split_model | split_model_all | multi_split_model | early_exit_split_model | data_processing | 
-                           run | run_all | plot_results | quant_model | show_graph)
+                           run | run_all | run_profiler | plot_results | quant_model | show_graph)
     --onnx_file ONNX_FILE                       Select the ONNX File
     --split_layer SPLIT_LAYER                   Select the layer where the slit must take place on the ONNX Model
     --split_layers SPLIT_LAYERS                 Select the list of layers where the slit must take place on the ONNX Model
@@ -137,7 +125,7 @@ Examples:
   )
   parser.add_argument('--operation', help='Select the operation to be performed on the ONNX Model',
                       choices=['list_layers', 'print_model', 'split_model', 'split_model_all', 'multi_split_model', 'early_exit_split_model',
-                               'data_processing', 'run', 'run_all', 'plot_results', 'quant_model', 'show_graph'])
+                               'data_processing', 'run', 'run_all', 'run_profiler', 'plot_results', 'quant_model', 'show_graph'])
   parser.add_argument('--onnx_file', help='Select the ONNX File')
   parser.add_argument('--xml_file', help='Select the XML File (OpenVINO Optimized Model)')
   parser.add_argument('--split_layer', help='Select the layer where the slit must take place on the ONNX Model')
@@ -236,6 +224,22 @@ Examples:
                             exec_provider,
                             args.device_type,
                             args.xml_file)
+  elif args.operation == "run_profiler":
+      onnx_run_profiler(args.onnx_file, 
+                        args.onnx_path, 
+                        args.image_file, 
+                        args.image_batch,
+                        int(args.image_size_x), 
+                        int(args.image_size_y), 
+                        args.image_is_grayscale == "True",
+                        args.minio_bucket,
+                        args.oscar_service,
+                        args.kube_namespace,
+                        args.platform,
+                        args.rep,
+                        exec_provider,
+                        args.device_type,
+                        args.xml_file)
   elif args.operation == "plot_results":
       plot_results(args.results_file)
   elif args.operation == "quant_model":
@@ -261,315 +265,6 @@ def onnx_model_details(onnx_file):
   '''
   onnx_model = onnx.load(onnx_file)
   print(onnx_model)
-
-def onnx_model_split(onnx_file, layer):
-  '''
-  Split an ONNX Model into two Models and save the ONNX Files
-
-  :param onnx_file: the ONNX file to split (it can also be an already splitted model)
-  :param layer: the name of the DNN layer where the split has to be performed on the model choosen
-  '''
-  print("Split at layer: " + layer)
-
-  #Load the Onnx Model
-  model_onnx = load_onnx_model(onnx_file)
-
-  #Split and save the first half of the ONNX Model at the specified layer
-  print("Split and get the first model..")
-  ##num_onnx = select_model_inputs_outputs(model_onnx, layer)
-  ##save_onnx_model(num_onnx, MODEL_SPLIT_FIRST_FILE)
-  output_path = MODEL_SPLIT_FIRST_FILE
-  input_names = []
-  onnx_model = onnx.load(onnx_file)
-  for i in range(len(onnx_model.graph.input)):
-    input_names.append(onnx_model.graph.input[i].name)
-  output_names = [layer]
-  onnx.utils.extract_model(onnx_file, output_path, input_names, output_names)
-
-  #Split and save the second half of the ONNX Model
-  print("Split and get the second model..")
-  output_path = MODEL_SPLIT_SECOND_FILE
-  input_names = [layer]
-  output_names = []
-  onnx_model = onnx.load(onnx_file)
-  for i in range(len(onnx_model.graph.output)):
-    print("Output: " + onnx_model.graph.output[i].name)
-    output_names.append(onnx_model.graph.output[i].name)
-
-  onnx.utils.extract_model(onnx_file, output_path, input_names, output_names)
-  print("Finished!")
-
-  print("\nGraph of the two models splitted..")
-  onnx_show_graph(MODEL_SPLIT_FIRST_FILE + ' ' + MODEL_SPLIT_SECOND_FILE);
-
-def onnx_model_split_all(onnx_file):
-  '''
-  For every layer in the ONNX Model, split the ONNX File into two Models and save them in a directory named after the layer label.
-
-  :param onnx_file: the ONNX file to split (it can also be an already splitted model)
-  '''
-  #Load the Onnx Model
-  model_onnx = load_onnx_model(onnx_file)
-
-  #Make a split for every layer in the model
-  ln = 0
-  for layer in enumerate_model_node_outputs(model_onnx):
-    #Ignore the last layer and RELU Layers
-    if layer != list(enumerate_model_node_outputs(model_onnx))[-1] and "relu" not in layer.lower():
-      folder = "split_" + str(ln) + "_on_" + layer.replace("/", '-').replace(":", '_')
-      if not(os.path.exists(folder) and os.path.isdir(folder)):
-        print("Create Folder: " + folder)
-        os.mkdir(folder)
-      
-      #Split and save the first half of the ONNX Model at the specified layer
-      print("Split at layer" + str(ln) + ": " + layer)
-      print("Split and get the first model..")
-      ##num_onnx = select_model_inputs_outputs(model_onnx, layer)
-      ##save_onnx_model(num_onnx, folder+"/first_half.onnx")
-      output_path = folder+'/first_half.onnx'
-      input_names = []
-      onnx_model = onnx.load(onnx_file)
-      for i in range(len(onnx_model.graph.input)):
-        input_names.append(onnx_model.graph.input[i].name)
-      output_names = [layer]
-      onnx.utils.extract_model(onnx_file, output_path, input_names, output_names)
-
-      #Split and save the second half of the ONNX Model
-      print("Split and get the second model..\n")
-      output_path = folder+'/second_half.onnx'
-      input_names = [layer]
-      output_names = []
-      onnx_model = onnx.load(onnx_file)
-      for i in range(len(onnx_model.graph.output)):
-        output_names.append(onnx_model.graph.output[i].name)
-
-      try:
-        onnx.utils.extract_model(onnx_file, output_path, input_names, output_names)
-      except Exception as e:
-        print(e)
-        shutil.rmtree(folder)
-
-      ln = ln + 1
-  print("Finished!")
-
-def onnx_model_multi_split(onnx_file, layers):
-  '''
-  Split an ONNX Model into MULTIPLE Models and save the ONNX Files
-
-  :param onnx_file: the ONNX file to split (it can also be an already splitted model)
-  :param layers: the list of names of the DNN layers where the splits have to be performed on the choosen model
-  '''
-  print("1st Split at layer: " + layers[0])
-
-  #Load the Onnx Model
-  #model_onnx = load_onnx_model(onnx_file)
-  onnx_model = onnx.load(onnx_file)
-
-  #Split and save the first part of the ONNX Model at the specified layer
-  print("Split and get the first model..")
-  #num_onnx = select_model_inputs_outputs(model_onnx, layers[0])
-  #save_onnx_model(num_onnx, "part1.onnx")
-  output_path = "part1.onnx"
-  input_names = []
-  for i in range(len(onnx_model.graph.input)):
-    input_names.append(onnx_model.graph.input[i].name)
-  output_names = [layers[0]]
-  onnx.utils.extract_model(onnx_file, output_path, input_names, output_names)
-
-  onnx_files = "part1.onnx"
-  for i in range(1, len(layers)+1):
-    #Split and save another part of the ONNX Model
-    print("Split and get the " +str(i+1)+ " model..")
-    output_path = 'part'+str(i+1)+'.onnx'
-    onnx_files = onnx_files + ' ' + output_path
-    input_names = [layers[i-1]]
-    if i == len(layers):
-      output_names = [] 
-      for j in range(len(onnx_model.graph.output)):
-        print("Output layer: " + onnx_model.graph.output[j].name)
-        output_names.append(onnx_model.graph.output[j].name)
-    else:
-      output_names = [layers[i]]
-      print("Output layer: " + output_names[0])
-
-    onnx_model = onnx.load(onnx_file)
-    onnx.utils.extract_model(onnx_file, output_path, input_names, output_names)
-    print("Finished this part!")
-
-  print("\nGraph of the " + str(len(layers)+1) + " models splitted..")
-  onnx_show_graph(onnx_files)
-
-def onnx_model_early_exits_split(onnx_file, outputs):
-  '''
-  Split an ONNX Model with EarlyExits into MULTIPLE Models and save the ONNX Files
-
-  :param onnx_file: the ONNX file to split (it can also be an already splitted model)
-  :param outputs: the list of names of the DNN nodes that represent the output or the early exits
-  '''
-  print("Outputs: " + str(outputs))
-
-  #Load the Onnx Model
-  model_onnx = load_onnx_model(onnx_file)
-
-  #Get all the outputs of the model from the onnx graph
-  outputs_read = []
-  for i in range(len(model_onnx.graph.output)):
-    print("Output layer: " + model_onnx.graph.output[i].name)
-    outputs_read.append(model_onnx.graph.output[i].name)
-
-  #Check that the outputs passed as argument actually exist in the model
-  for output in outputs:
-    if output not in outputs_read:
-      print("Error: the output '"+output+"' passed as argument does not belong to the model!")
-      return
-
-  #Split the model for each output passed as argument
-  num_splits = 0
-  remaining_onnx = None
-  split_nodes = []
-  for output in outputs:
-    if num_splits == 0:
-      split_node = onnxGetSplitNodeForEarlyExit(model_onnx.graph, output)
-      print("Split at node: " + split_node)
-      split_nodes.append(split_node)
-
-      #Perform the Split
-      onnx_model_early_exits_singlesplit(onnx_file, model_onnx, split_node, num_splits, output)
-    elif num_splits > 0 and num_splits < len(outputs)-1:
-      split_node = onnxGetSplitNodeForEarlyExit(model_onnx.graph, output)
-      print("Split at node: " + split_node)
-      split_nodes.append(split_node)
-
-      #Perform the Split
-      onnx_model_early_exits_singlesplit(onnx_file, model_onnx, split_node, num_splits, output)
-    elif num_splits == len(outputs)-1:
-      split_node = onnxGetSplitNodeForEarlyExit(model_onnx.graph, output)
-      print("Split at node: " + split_node)
-      split_nodes.append(split_node)
-
-      #Perform the Split
-      onnx_model_early_exits_singlesplit(onnx_file, model_onnx, split_node, num_splits, output)
-
-    num_splits = num_splits + 1
-  
-  #Split and save the BaseModel of the Full ONNX Model at the specified layers (the outputs)
-  #base_model_onnx = select_model_inputs_outputs(model_onnx, split_nodes)
-  #save_onnx_model(base_model_onnx, "ee_base_model.onnx")
-  output_path = "ee_base_model.onnx"
-  input_names = []
-  onnx_model = onnx.load(onnx_file)
-  for i in range(len(onnx_model.graph.input)):
-    input_names.append(onnx_model.graph.input[i].name)
-  output_names = split_nodes 
-  onnx.utils.extract_model(onnx_file, output_path, input_names, output_names)
-
-  # Graph the Base Model and all the other models splitted (one for each output/early-exit)
-  modelsToGraph = "ee_base_model.onnx"
-  for i in range(len(model_onnx.graph.output)):
-    modelsToGraph = modelsToGraph + " ee_"+model_onnx.graph.output[i].name+".onnx"
-  print("\nGraph all the models..")
-  onnx_show_graph(modelsToGraph)
-
-def onnx_model_early_exits_singlesplit(onnx_file, model_onnx, split_node, num_splits, output):
-  '''
-  Perform one Split on a ONNX Model with EarlyExits
-  '''
-  #Split and save the first half of the ONNX Model at the specified layer
-  #remaining_onnx = select_model_inputs_outputs(model_onnx, split_node)
-  #save_onnx_model(remaining_onnx, "ee_base_model.onnx")
-
-  #Split and save the second half of the ONNX Model
-  if num_splits == 0:
-    print("Split and get the first model for output: " + output)
-  else:
-    print("Split and get the "+str(num_splits+1)+"° model for output: " + output)
-  output_path = "ee_"+output+".onnx"
-  input_names = [split_node]
-  output_names = [output]
-  onnx.utils.extract_model(onnx_file, output_path, input_names, output_names)
-  print("Done..")
-  #print("\nGraph of the model..")
-  #onnx_show_graph(output_path)
-
-def onnxGetSplitNodeForEarlyExit(graph, output):
-  '''
-  Find and return the node where the split has to be made before an output or early-exit.
-  This will tipically be a couple of layers far away from the output, just before a concatenation.
-
-  :param graph: the graph of the onnx model to inspect
-  :param output: the name of the output or early-exit to insp
-  :returns: split layer name
-  '''
-  #First find the node before the output passed as argument
-  outputNode = None
-  prevNode = None
-  for node in graph.node:
-    if output in node.output:
-      outputNode = node   
-      prevNode = node.input
-      print(prevNode)
-
-  #Then traferse the graph backwords
-  while prevNode not in graph.input:
-    for node in graph.node:
-      for prev in prevNode:
-        if prev in node.output:
-          prevNode = node.input 
-          print(prevNode)
-
-          # the first concatenation node represents our limit, we split just after
-          if 'concat' in node.input[0]:
-            return node.output[0]
-          break
-
-def onnx_model_split_all_singlenode(onnx_file, tensors):
-  '''
-  For every layer in the ONNX Model, split the ONNX File into a single node/layer model
-
-  :param onnx_file: the ONNX file to split (it can also be an already splitted model)
-  :param tensors: dictionary containing all the the intermediate tensors
-  '''
-  #Load the Onnx Model
-  model_onnx = load_onnx_model(onnx_file)
-
-  #Make a Folder
-  folder = "SingleLayerSplits"
-  if not(os.path.exists(folder) and os.path.isdir(folder)):
-    print("Create Folder: " + folder)
-    os.mkdir(folder)
-
-  #Get the list of all the layers where we must split
-  listLayers = []
-  for layer in tensors:
-    listLayers.append(layer)
-
-  # For each layer get extract from the full model a single layer model
-  for i in range(0, len(listLayers)-1):
-    layer = listLayers[i]
-    nextLayer = listLayers[i+1]
-    output_path = folder+'/'+layer.replace("/", '-').replace(":", '_')+'.onnx'
-    #output_path = folder+'/'+nextLayer.replace("/", '-').replace(":", '_')+'.onnx'    #use the output layer name as ModelName.onnx 
-    input_names = [layer]
-    output_names = [nextLayer]
-    try:
-      onnx.utils.extract_model(onnx_file, output_path, input_names, output_names)
-    except Exception as e:
-      print(e)
-
-  #Also extract the model for the last layer
-  layer = listLayers[len(listLayers)-1]
-  output_path = folder+'/'+layer.replace("/", '-').replace(":", '_')+'.onnx'
-  input_names = [layer]
-  output_names = []
-  onnx_model = onnx.load(onnx_file)
-  for i in range(len(onnx_model.graph.output)):
-    output_names.append(onnx_model.graph.output[i].name)
-  try:
-    onnx.utils.extract_model(onnx_file, output_path, input_names, output_names)
-  except Exception as e:
-    print(e)
-
-  print("Finished!")
 
 def onnx_run_complete(onnx_path, split_layer, image_file, image_batch, img_size_x, img_size_y, is_grayscale, 
                       minio_bucket,  oscar_service, kube_namespace, platform, exec_provider, device_type, xml_file = None):
@@ -623,7 +318,7 @@ def onnx_run_complete(onnx_path, split_layer, image_file, image_batch, img_size_
 
   #Iterate through the subdirectories to find the ONNX model splitted at our selected layer
   onnx_file = None
-  if split_layer == "NO_SPLIT":
+  if split_layer == "NO_SPLIT" or split_layer == "PROFILING":
     #Since we skip the local execution and don't use splits, the full model is required instead of the onnx_path
     onnx_file = onnx_path
   else:
@@ -654,7 +349,7 @@ def onnx_run_complete(onnx_path, split_layer, image_file, image_batch, img_size_
     #dictTensors[model_onnx.graph.input[0]] = inputData    #"first" won't be recognized, use the input of the model
 
     # Check if we have to SKIP the 1st Inference Execution Locally
-    if split_layer == "NO_SPLIT":
+    if split_layer == "NO_SPLIT" or split_layer == "PROFILING":
       print("\n ###SKIP the 1st Inference Execution Locally, run directly the whole model on the Cloud..\n")
       print(" Create a results.txt file with the whole image instead of the tensor..")
       data = {
@@ -662,9 +357,13 @@ def onnx_run_complete(onnx_path, split_layer, image_file, image_batch, img_size_
         "fullModelFile": onnx_file,
         "execTime1": 0,   #1st Inference Execution Time
         "result": inputData,
-        "tensorLenght": inputData.size,
+        "tensorLength": inputData.size,
         "tensorSaveTime": 0
       }
+
+      # Profiling case must be differentiated
+      if split_layer == "PROFILING":
+        data["splitLayer"] = "PROFILING"
 
       #Save the first input tensor (input)
       #dictTensors["first"] = inputData
@@ -675,7 +374,7 @@ def onnx_run_complete(onnx_path, split_layer, image_file, image_batch, img_size_
         pickle.dump(data, f)
     else:
       #Run at Inference the First part of the ONNX DNN Model (on single image OR batch)
-      resData = onnx_run_first_half(onnx_file, inputData, True, exec_provider, device_type, profiling=False, xml_file=xml_file)   
+      resData, _ = onnx_run_first_half(onnx_file, inputData, True, exec_provider, device_type, profiling=False, xml_file=xml_file)   
       #I don't need to save the file since it's already saved in onnx_first_inference.py 
 
       #Save the Intermediate Tensors
@@ -693,37 +392,6 @@ def onnx_run_complete(onnx_path, split_layer, image_file, image_batch, img_size_
     endNetworkingTime = time.perf_counter()
     networkingTime = endNetworkingTime-startNetworkingTime
     print("File upload done in: " + str(networkingTime))
-    
-    '''#Check when is the Cloud execution terminated on OSCAR
-    execFinished = False
-    import time
-    while not execFinished:
-      time.sleep(0.1)
-      print(".")
-      outputStrAfter = os.system(MINIO_CLI+" ls local/"+minio_bucket+"/output")
-      if outputStrBefore == outputStrAfter:
-        execFinished = True
-    
-    #Get the result from the MinIO Bucket
-    os.system(MINIO_CLI+" cp local/"+minio_bucket+"/output/output.txt output.json")
-    # Opening JSON file
-    f = open('output.json')
-    # Clean the JSON file
-    jsonLines = []
-    with open(r'output.json', 'r') as fp:
-      # read an store all lines into list
-      jsonLines = fp.readlines()
-    for i in range(0, len(jsonLines)):
-      if not jsonLines[0].startswith('{'): 
-        jsonLines.pop(0)
-    # Returns JSON object as a dictionary
-    jsonStr = ''.join(jsonLines)
-    data = json.loads(jsonStr)
-    # Closing file
-    f.close()
-
-    print("\n ####1st Inference Execution Time: " + str(data["execTime1"]) + "sec") #1st Inference Execution Time
-    print("\n ####2nd Inference Execution Time: " + str(data["execTime2"]) + "sec") #2nd Inference Execution Time'''
 
     ### Get the Cluster's timings via oscar-cli
     # Get OSCAR Job Name
@@ -799,7 +467,6 @@ def onnx_run_complete(onnx_path, split_layer, image_file, image_batch, img_size_
     print("\n ####1st Inference Execution Time: " + str(data["execTime1"]) + "sec") #1st Inference Execution Time
     print("\n ####2nd Inference Execution Time: " + str(data["execTime2"]) + "sec") #2nd Inference Execution Time
 
-
     ### Get the Pod's timings on Kubernetes via kubectl
     # Get POD Name
     print("Find POD's Name, print the list of pods..")
@@ -829,11 +496,15 @@ def onnx_run_complete(onnx_path, split_layer, image_file, image_batch, img_size_
     print("\n ###2nd Inf. OSCAR JOB Exec. Time: " + str(execTime3) + "sec")
     print("\n ###2nd Inf. Kubernetes POD Exec. Time: " + str(execTime4) + "sec")
     print("\n ---------------------------------------------------")
-    print("\n ####Tensor Lenght: " + str(data["tensorLenght"]))
+    print("\n ####Tensor Length: " + str(data["tensorLength"]))
     print("\n ####1st Inf. Tensor Save Time: " + str(data["tensorSaveTime"]) + "sec")
     print("\n ####Networking Time: " + str(networkingTime))
     print("\n ####2nd Inf. Tensor Load Time: " + str(data["tensorLoadTime"]) + "sec")
-    return data["execTime1"], data["execTime2"], execTime3, execTime4, data["tensorLenght"], data["tensorSaveTime"], data["tensorLoadTime"], networkingTime
+
+    if split_layer == "PROFILING":
+      return data["execTime1"], data["execTime2"], execTime3, execTime4, data["tensorLength"], data["tensorSaveTime"], data["tensorLoadTime"], networkingTime, data["profilingTableCloud"]
+    else: 
+      return data["execTime1"], data["execTime2"], execTime3, execTime4, data["tensorLength"], data["tensorSaveTime"], data["tensorLoadTime"], networkingTime
   return -1,-1,-1,-1,-1,-1,-1,-1
 
 def onnx_run_all_complete(onnx_file, onnx_path, image_file, image_batch, img_size_x, img_size_y, is_grayscale, 
@@ -868,111 +539,21 @@ def onnx_run_all_complete(onnx_file, onnx_path, image_file, image_batch, img_siz
 
   global dictTensors
 
-  #######################
-  '''model_onnx = load_onnx_model(onnx_file)
-
-  #Load tensor dictionary 
-  with open("tensor_dict.pkl", "rb") as tf:
-    tensors = pickle.load(tf)
-
-  #Iterate through inputs of the graph and get operation types
-  dictOperations = {}
-  for node in model_onnx.graph.node:
-    name = node.output[0]
-    op_type = node.op_type
-    if name in dictTensors:
-      dictOperations[name] = op_type
-      #print (op_type)
-
-  #Now we split the layer in single blocks and run them individually in order to get the inference time per layer
-  onnx_model_split_all_singlenode(onnx_file, tensors)'''
-
-  #Run at inference all the single layer models generated and get the inference execution time and the Nr. of Parameters
-  '''layerTime = {}
-  dictNrParams = {}
-  dictFLOPS = {}
-  #Load tensor dictionary 
-  with open("tensor_dict.pkl", "rb") as tf:
-    dictTensors = pickle.load(tf)
-
-  for layer in dictTensors:
-    #Ignore the first layer since it will be the input
-    if True: #layer != list(dictTensors.keys())[0]:
-      file = "SingleLayerSplits/"+layer.replace("/", '-').replace(":", '_')+'.onnx'
-
-      if os.path.exists(file):
-        #Execute at inference the whole model locally AND Use profiling (for now disabled)
-        try:
-          #t_inf = onnx_run_first_half(file, dictTensors[layer], False, exec_provider, device_type, profiling=False)["execTime1"] 
-          #t_inf = onnx_run_first_half(file, dictTensors[layer], False, CPU_EP_list, device_type, profiling=False)["execTime1"]  
-          inputData = dictTensors[layer]
-          resData = onnx_run_first_half(file, inputData, True, exec_provider, device_type, profiling=False, xml_file=xml_file)  
-          resData = onnx_run_first_half(file, inputData, True, exec_provider, device_type, profiling=False, xml_file=xml_file) 
-          resData = onnx_run_first_half(file, inputData, True, exec_provider, device_type, profiling=False, xml_file=xml_file) 
-          t_inf = resData["execTime1"]  
-        except Exception as e:
-          print(e)
-        layerTime[layer] = t_inf
-        time.sleep(3.5) #it's only needed for OpenVINO, cuz NCS2 runs out of memory'''
-
-  
-  #Get the data from the first two cvs files
-  '''list1 = []
-  list2 = []
-  list1_avg = []
-  list2_avg = []
-  with open(RESULTS_CSV_FILE, 'r', newline='') as csvfile1:
-    reader = csv.reader(csvfile1, delimiter=",")
-    for i, line in enumerate(reader):
-      list1.append(line)
-  with open(RESULTS_CSV_FILE2, 'r', newline='') as csvfile2:
-    reader = csv.reader(csvfile2, delimiter=",")
-    for i, line in enumerate(reader):
-      list2.append(line)
-
-  #Calc the sum of all the time of execution of all the singleLayer models
-  singleLayerTimeSum = [0]*repetitions
-  rowsPerRepetition = int(len(list2)/repetitions)
-
-  #AVERAGE all the times
-  list1_avg = list1
-  list2_avg = list2
-  for i in range(1, rowsPerRepetition): 
-    list1_avg[i][1] = float(list1[i][1])   #1stInfTime
-    list1_avg[i][2] = float(list1[i][2])   #2ndInfTime
-    list1_avg[i][3] = float(list1[i][3])   #oscarJobTime
-    list1_avg[i][4] = float(list1[i][4])   #kubePodTime
-    list2_avg[i][1] = float(list2[i][1])   #singleLayerInfTime
-
-    for rep in range(1, repetitions):
-      list1_avg[i][1] = float(list1_avg[i][1]) + float(list1[i+rep*rowsPerRepetition][1])   #1stInfTime
-      list1_avg[i][2] = float(list1_avg[i][2]) + float(list1[i+rep*rowsPerRepetition][2])   #2ndInfTime
-      list1_avg[i][3] = float(list1_avg[i][3]) + float(list1[i+rep*rowsPerRepetition][3])   #oscarJobTime
-      list1_avg[i][4] = float(list1_avg[i][4]) + float(list1[i+rep*rowsPerRepetition][4])   #kubePodTime
-      list2_avg[i][1] = float(list2_avg[i][1]) + float(list2[i+rep*rowsPerRepetition][1])   #singleLayerInfTime
-  for i in range(1, rowsPerRepetition): 
-    list1_avg[i][1] = str(list1_avg[i][1]/repetitions)   #1stInfTime
-    list1_avg[i][2] = str(list1_avg[i][2]/repetitions)   #2ndInfTime
-    list1_avg[i][3] = str(list1_avg[i][3]/repetitions)   #oscarJobTime
-    list1_avg[i][4] = str(list1_avg[i][4]/repetitions)   #kubePodTime
-    list2_avg[i][1] = str(list2_avg[i][1]/repetitions)   #singleLayerInfTime
-
-  #Unite the two tables into a fourth cvs file
-  import math
-  with open(AVG_RESULTS_CSV_FILE, 'w', newline='') as csvfile3:
-    fieldnames = ['SplitLayer', '1stInfTime', '2ndInfTime', 'oscarJobTime', 'kubePodTime', 'tensorSaveTime', 'tensorLoadTime', 'tensorLenght', 
-                  'networkingTime', 'singleLayerInfTime', 'OpType', 'NrParameters', 'FLOPS']
-    cvswriter = csv.DictWriter(csvfile3, fieldnames=fieldnames)
-    cvswriter.writeheader()
-
-    for i in range(1, rowsPerRepetition): 
-      cvswriter.writerow({"SplitLayer":list1[i][0], "1stInfTime":list1_avg[i][1], "2ndInfTime":list1_avg[i][2], "oscarJobTime":list1_avg[i][3], "kubePodTime":list1_avg[i][4],
-                          "tensorSaveTime":list1[i][5], "tensorLoadTime":list1[i][6], "tensorLenght":list1[i][7], "networkingTime":list1[i][8], 
-                          "singleLayerInfTime":list2_avg[i][1], "OpType":list2[i][2], "NrParameters":list2[i][3], "FLOPS":list2[i][4]})'''
-  #####################
-
   #Load the Onnx Model
   model_onnx = load_onnx_model(onnx_file)
+
+  # Process input data (image or batch of images)
+  inputData = data_processing(image_file, image_batch, img_size_x, img_size_y, is_grayscale, model_onnx.graph.input[0])
+  batchSize = inputData[0]
+
+  # Process and get the ProfiligTable by running at inference the full model (A WARMUP execution is also performed before)
+  resData, _ = onnx_run_first_half(onnx_file, inputData, True, exec_provider, device_type, profiling=True, xml_file=xml_file)
+  resData, profilingTable = onnx_run_first_half(onnx_file, inputData, True, exec_provider, device_type, profiling=True, xml_file=xml_file)
+
+  # Get the Inference Time of each layer (it can be also a sequence of nodes) by analyzing the profiling Table
+  '''with open("tensor_dict.pkl", "rb") as tf:
+    dictTensors = pickle.load(tf)
+  listSingleLayerInfProfiling = getSingleLayerExecutionTimeTable(model_onnx, list(dictTensors.keys()), profilingTable)'''
 
   #Open an cvs file to save the results
   with open(RESULTS_CSV_FILE, 'w', newline='') as csvfile:
@@ -981,7 +562,7 @@ def onnx_run_all_complete(onnx_file, onnx_path, image_file, image_batch, img_siz
       for rep in range(0, repetitions):
         #fieldnames = ['SplitLayer', 'Time1', 'Time2', 'Time3', 'Time4']
         fieldnames = ['SplitLayer', '1stInfTime', '2ndInfTime', 'oscarJobTime', 'kubePodTime', 
-                      'tensorSaveTime', 'tensorLoadTime', 'tensorLenght', 'networkingTime']
+                      'tensorSaveTime', 'tensorLoadTime', 'tensorLength', 'networkingTime']
         cvswriter = csv.DictWriter(csvfile, fieldnames=fieldnames)
         cvswriter.writeheader()
 
@@ -990,11 +571,11 @@ def onnx_run_all_complete(onnx_file, onnx_path, image_file, image_batch, img_siz
         batchSize = inputData[0]
 
         #Execute at inference the whole model locally AND Use profiling (for now disabled)
-        t_1st_inf = onnx_run_first_half(onnx_file, inputData, True, exec_provider, device_type, profiling=False, xml_file=xml_file)["execTime1"]  
+        t_1st_inf = onnx_run_first_half(onnx_file, inputData, True, exec_provider, device_type, profiling=False, xml_file=xml_file)[0]["execTime1"]  
         print("Finished inference of the whole layer locally..")
         #cvswriter.writerow({'SplitLayer':"NO_SPLIT", "Time1":t_1st_inf, "Time2":0, "Time3":0, "Time4":0})
         cvswriter.writerow({"SplitLayer":"NO_SPLIT", "1stInfTime":t_1st_inf, "2ndInfTime":0, "oscarJobTime":0, "kubePodTime":0, 
-                            "tensorSaveTime":0, "tensorLoadTime":0, "tensorLenght":0, "networkingTime":0})
+                            "tensorSaveTime":0, "tensorLoadTime":0, "tensorLength":0, "networkingTime":0})
         print("Saved results..")  
 
         #Execute at inference the whole model on the Cloud (OSCAR)
@@ -1015,12 +596,12 @@ def onnx_run_all_complete(onnx_file, onnx_path, image_file, image_batch, img_siz
                                                                                           device_type,
                                                                                           xml_file=xml_file) 
         except Exception as e:
-          print("Error on executin RUN Complete cycle: " + e)  
+          print("Error on executin RUN Complete cycle: " + str(e))  
 
         print("Finished inference of the whole layer on the Cloud (OSCAR)..")
         #cvswriter.writerow({'SplitLayer':"NO_SPLIT", "Time1":0, "Time2":t_2nd_inf, "Time3":t_oscar_job, "Time4":t_kube_pod})
         cvswriter.writerow({"SplitLayer":"NO_SPLIT", "1stInfTime":0, "2ndInfTime":t_2nd_inf, "oscarJobTime":t_oscar_job, "kubePodTime":t_kube_pod,
-                            "tensorSaveTime":t_tensor_save, "tensorLoadTime":t_tensor_load, "tensorLenght":tensor_lenght, "networkingTime":t_networking})
+                            "tensorSaveTime":t_tensor_save, "tensorLoadTime":t_tensor_load, "tensorLength":tensor_lenght, "networkingTime":t_networking})
         print("Saved results..")  
 
         #Make a split for every layer in the model
@@ -1032,8 +613,8 @@ def onnx_run_all_complete(onnx_file, onnx_path, image_file, image_batch, img_siz
             splitLayer = layer.replace("/", '-').replace(":", '_')
 
             #TODO:delete this when mobilenet_splittedmodels is updated on OSCAR
-            if splitLayer == "sequential-mobilenetv2_1.00_160-Conv1-Conv2D__7426_0":
-              splitLayer = "sequential-mobilenetv2_1.00_160-Conv1-Conv2D__6_0"
+            #if splitLayer == "sequential-mobilenetv2_1.00_160-Conv1-Conv2D__7426_0":
+            #  splitLayer = "sequential-mobilenetv2_1.00_160-Conv1-Conv2D__6_0"
 
             print("Splitting at layer: " + splitLayer)
 
@@ -1056,20 +637,20 @@ def onnx_run_all_complete(onnx_file, onnx_path, image_file, image_batch, img_siz
                                                                                               device_type,
                                                                                               xml_file=xml_file)
             except Exception as e:
-              print("Error on executin RUN Complete cycle: " + e) 
+              print("Error on executin RUN Complete cycle: " + str(e)) 
 
             # t_1st_inf = 1st Inference Execution Time
             # t_2nd_inf = 2nd Inference Execution Time
             # t_oscar_job = 2nd Inf. OSCAR JOB Exec. Time
             # t_kube_pod = 2nd Inf. Kubernetes POD Exec. Time
-            # tensor_lenght = 1st Inf. Tensor Lenght:
+            # tensor_lenght = 1st Inf. Tensor Length:
             # t_tensor_save = 1st Inf. Tensor Save Time
             # t_tensor_load = 2nd Inf. Tensor Load Time
             if t_1st_inf != -1 and t_2nd_inf != -1 and t_oscar_job != -1 and t_kube_pod != -1:
               print("Finished inference after splitting at layer: " + splitLayer)
               #cvswriter.writerow({'SplitLayer':splitLayer, "Time1":t_1st_inf, "Time2":t_2nd_inf, "Time3":t_oscar_job, "Time4":t_kube_pod})
               cvswriter.writerow({"SplitLayer":splitLayer, "1stInfTime":t_1st_inf, "2ndInfTime":t_2nd_inf, "oscarJobTime":t_oscar_job, "kubePodTime":t_kube_pod,
-                                  "tensorSaveTime":t_tensor_save, "tensorLoadTime":t_tensor_load, "tensorLenght":tensor_lenght, "networkingTime":t_networking})
+                                  "tensorSaveTime":t_tensor_save, "tensorLoadTime":t_tensor_load, "tensorLength":tensor_lenght, "networkingTime":t_networking})
               print("Saved results..")
 
         #Save tensor dictionary 
@@ -1079,6 +660,31 @@ def onnx_run_all_complete(onnx_file, onnx_path, image_file, image_batch, img_siz
         #Load tensor dictionary 
         with open("tensor_dict.pkl", "rb") as tf:
           tensors = pickle.load(tf)
+
+        #Get the list of all the layers we need
+        #for OLD onnxruntime versions, we need the names of the nodes to be saved differently (attribute name instead of output from the onnx graph)
+        splitNodesCompatibility = []   
+        for layer, lnode in enumerate_model_node_outputs(model_onnx, add_node = True):
+          #Ignore the first and the last layer
+          if layer != list(enumerate_model_node_outputs(model_onnx))[0] and layer != list(enumerate_model_node_outputs(model_onnx))[-1]:
+            for dir in os.listdir(onnx_path):
+              if dir.find("_on_") > 0:
+                index = dir.index('_on_')
+                d = dir[index+4:]
+                if d == splitLayer:
+                  splitNodesCompatibility.append(lnode.name)
+
+        # Get the Inference Time of each layer (it can be also a sequence of nodes) by analyzing the profiling Table
+        if version.parse(onnxruntime.__version__) < version.parse("1.10.0"):
+          #for old onnxruntime versions, we need different names
+          dictSingleLayerInfProfiling = getSingleLayerExecutionTimeTable(model_onnx, splitNodesCompatibility, profilingTable)
+          #update keys with the node names that we need
+          splitNodes = list(dictTensors.keys())
+          for i in range(len(splitNodes)):
+            dictSingleLayerInfProfiling[splitNodes[i]] = dictSingleLayerInfProfiling[splitNodesCompatibility[i]]
+            del dictSingleLayerInfProfiling[splitNodesCompatibility[i]]
+        else:
+          dictSingleLayerInfProfiling = getSingleLayerExecutionTimeTable(model_onnx, list(dictTensors.keys()), profilingTable)
 
         #Iterate through inputs of the graph and get operation types
         dictOperations = {}
@@ -1131,9 +737,9 @@ def onnx_run_all_complete(onnx_file, onnx_path, image_file, image_batch, img_siz
                 #t_inf = onnx_run_first_half(file, dictTensors[layer], False, CPU_EP_list, device_type, profiling=False)["execTime1"]  
                 inputData = dictTensors[layer]
                 #first inference is just to get the model loaded into ram
-                resData = onnx_run_first_half(file, inputData, True, exec_provider, device_type, profiling=False, xml_file=xml_file)  
+                resData, _ = onnx_run_first_half(file, inputData, True, exec_provider, device_type, profiling=False, xml_file=xml_file)  
                 #sencond inference with the same model is faster (mimicing a case whre we don't have to load the model in ram)
-                resData = onnx_run_first_half(file, inputData, True, exec_provider, device_type, profiling=False, xml_file=xml_file, ignore_onnx_load_time = True)  
+                resData, _ = onnx_run_first_half(file, inputData, True, exec_provider, device_type, profiling=False, xml_file=xml_file)  
                 t_inf = resData["execTime1"] 
               except Exception as e:
                 print(e)
@@ -1141,7 +747,7 @@ def onnx_run_all_complete(onnx_file, onnx_path, image_file, image_batch, img_siz
               time.sleep(3.5) #it's only needed for OpenVINO, cuz NCS2 runs out of memory
 
         #Save the inf times in a different csv file     
-        fieldnames2 = ['SplitLayer', 'singleLayerInfTime', 'OpType', 'NrParameters', 'FLOPS']
+        fieldnames2 = ['SplitLayer', 'singleLayerInfTime', 'OpType', 'NrParameters', 'FLOPS', 'singleLayerInfTimeProf']
         cvswriter2 = csv.DictWriter(csvfile2, fieldnames=fieldnames2)
         cvswriter2.writeheader()
         cvswriter2.writerow({"SplitLayer":"NO_SPLIT", "singleLayerInfTime":0})
@@ -1157,7 +763,8 @@ def onnx_run_all_complete(onnx_file, onnx_path, image_file, image_batch, img_siz
             nextLayer = list(layerTime.keys())[index+1]
             try:
               cvswriter2.writerow({"SplitLayer":nextLayer.replace("/", '-').replace(":", '_'), "singleLayerInfTime":layerTime[layer], 
-                                  "OpType":dictOperations[nextLayer], "NrParameters":dictNrParams[layer], 'FLOPS':dictFLOPS[layer]})
+                                  "OpType":dictOperations[nextLayer], "NrParameters":dictNrParams[layer], 'FLOPS':dictFLOPS[layer],
+                                  "singleLayerInfTimeProf":dictSingleLayerInfProfiling[nextLayer]})
             except Exception as e:
               print(e)
             index = index + 1
@@ -1194,11 +801,11 @@ def onnx_run_all_complete(onnx_file, onnx_path, image_file, image_batch, img_siz
     list2_avg[i][1] = float(list2[i][1])   #singleLayerInfTime
 
     for rep in range(1, repetitions):
-      list1_avg[i][1] = float(list1_avg[i][1]) + float(list1[i+rep*rowsPerRepetition][1])   #1stInfTime
-      list1_avg[i][2] = float(list1_avg[i][2]) + float(list1[i+rep*rowsPerRepetition][2])   #2ndInfTime
-      list1_avg[i][3] = float(list1_avg[i][3]) + float(list1[i+rep*rowsPerRepetition][3])   #oscarJobTime
-      list1_avg[i][4] = float(list1_avg[i][4]) + float(list1[i+rep*rowsPerRepetition][4])   #kubePodTime
-      list2_avg[i][1] = float(list2_avg[i][1]) + float(list2[i+rep*rowsPerRepetition][1])   #singleLayerInfTime
+      list1_avg[i][1] = float(list1_avg[i][1]) + float(list1[i+rep*(rowsPerRepetition)][1])   #1stInfTime
+      list1_avg[i][2] = float(list1_avg[i][2]) + float(list1[i+rep*(rowsPerRepetition)][2])   #2ndInfTime
+      list1_avg[i][3] = float(list1_avg[i][3]) + float(list1[i+rep*(rowsPerRepetition)][3])   #oscarJobTime
+      list1_avg[i][4] = float(list1_avg[i][4]) + float(list1[i+rep*(rowsPerRepetition)][4])   #kubePodTime
+      list2_avg[i][1] = float(list2_avg[i][1]) + float(list2[i+rep*(rowsPerRepetition)][1])   #singleLayerInfTime
   for i in range(1, rowsPerRepetition): 
     list1_avg[i][1] = str(list1_avg[i][1]/repetitions)   #1stInfTime
     list1_avg[i][2] = str(list1_avg[i][2]/repetitions)   #2ndInfTime
@@ -1209,8 +816,8 @@ def onnx_run_all_complete(onnx_file, onnx_path, image_file, image_batch, img_siz
   #Unite the two tables into a third cvs file
   import math
   with open(FINAL_RESULTS_CSV_FILE, 'w', newline='') as csvfile3:
-    fieldnames = ['SplitLayer', '1stInfTime', '2ndInfTime', 'oscarJobTime', 'kubePodTime', 'tensorSaveTime', 'tensorLoadTime', 'tensorLenght', 
-                  'networkingTime', 'singleLayerInfTime', 'OpType', 'NrParameters', 'FLOPS', 'SingleLayerSum-Splitted']
+    fieldnames = ['SplitLayer', '1stInfTime', '2ndInfTime', 'oscarJobTime', 'kubePodTime', 'tensorSaveTime', 'tensorLoadTime', 'tensorLength', 
+                  'networkingTime', 'singleLayerInfTime', 'OpType', 'NrParameters', 'FLOPS', 'SingleLayerSum-Splitted', "singleLayerInfTimeProf"]
     cvswriter = csv.DictWriter(csvfile3, fieldnames=fieldnames)
     cvswriter.writeheader()
 
@@ -1219,411 +826,367 @@ def onnx_run_all_complete(onnx_file, onnx_path, image_file, image_batch, img_siz
         cvswriter.writeheader()
       else:
         cvswriter.writerow({"SplitLayer":list1[i][0], "1stInfTime":list1[i][1], "2ndInfTime":list1[i][2], "oscarJobTime":list1[i][3], "kubePodTime":list1[i][4],
-                          "tensorSaveTime":list1[i][5], "tensorLoadTime":list1[i][6], "tensorLenght":list1[i][7], "networkingTime":list1[i][8], 
+                          "tensorSaveTime":list1[i][5], "tensorLoadTime":list1[i][6], "tensorLength":list1[i][7], "networkingTime":list1[i][8], 
                           "singleLayerInfTime":list2[i][1], "OpType":list2[i][2], "NrParameters":list2[i][3], "FLOPS":list2[i][4],
-                          "SingleLayerSum-Splitted": str(singleLayerTimeSum[math.floor(i/rowsPerRepetition)] - (float(list1[i][1]) + float(list1[i][2])))})
+                          "SingleLayerSum-Splitted": str(singleLayerTimeSum[math.floor(i/rowsPerRepetition)] - (float(list1[i][1]) + float(list1[i][2]))),
+                          "singleLayerInfTimeProf": list2[i][5]})
 
   #Unite the two tables into a fourth cvs file, averaging the time measurements
   import math
   with open(AVG_RESULTS_CSV_FILE, 'w', newline='') as csvfile3:
-    fieldnames = ['SplitLayer', '1stInfTime', '2ndInfTime', 'oscarJobTime', 'kubePodTime', 'tensorSaveTime', 'tensorLoadTime', 'tensorLenght', 
-                  'networkingTime', 'singleLayerInfTime', 'OpType', 'NrParameters', 'FLOPS']
+    fieldnames = ['SplitLayer', '1stInfTime', '2ndInfTime', 'oscarJobTime', 'kubePodTime', 'tensorSaveTime', 'tensorLoadTime', 'tensorLength', 
+                  'networkingTime', 'singleLayerInfTime', 'OpType', 'NrParameters', 'FLOPS', 'singleLayerInfTimeProf']
     cvswriter = csv.DictWriter(csvfile3, fieldnames=fieldnames)
     cvswriter.writeheader()
 
     for i in range(1, rowsPerRepetition): 
       cvswriter.writerow({"SplitLayer":list1[i][0], "1stInfTime":list1_avg[i][1], "2ndInfTime":list1_avg[i][2], "oscarJobTime":list1_avg[i][3], "kubePodTime":list1_avg[i][4],
-                          "tensorSaveTime":list1[i][5], "tensorLoadTime":list1[i][6], "tensorLenght":list1[i][7], "networkingTime":list1[i][8], 
-                          "singleLayerInfTime":list2_avg[i][1], "OpType":list2[i][2], "NrParameters":list2[i][3], "FLOPS":list2[i][4]})
+                          "tensorSaveTime":list1[i][5], "tensorLoadTime":list1[i][6], "tensorLength":list1[i][7], "networkingTime":list1[i][8], 
+                          "singleLayerInfTime":list2_avg[i][1], "OpType":list2[i][2], "NrParameters":list2[i][3], "FLOPS":list2[i][4],
+                          "singleLayerInfTimeProf": list2[i][5]})
 
   print("Plotting the results..")
   plot_results(AVG_RESULTS_CSV_FILE)
 
-def calc_flops(onnx_json, batchSize):
+def onnx_run_profiler(onnx_file, onnx_path, image_file, image_batch, img_size_x, img_size_y, is_grayscale, 
+                          minio_bucket, oscar_service, kube_namespace, platform, repetitions, exec_provider, device_type, xml_file = None):
   '''
-  Calculate the FLOPS of a given onnx model. It expects in input the JSON version of the onnx's graph.
+  Run with the (onnxruntime)profiling function the full onnx model on both Edge and Cloud (OSCAR) and profile the execution times layer by layer as well as
+  all the other data such as FLOPS, Nr. of Operations ecc..
 
-  :param onnx_json: the JSON version of the onnx's graph
-  :returns: a dictionay with the flops for every node in the onnx model
-  '''
-  dictNodeFLOPS = {}
-  #Iterate all the nodes of the Single Layer Model
-  for node in onnx_json['graph']['node']:
-    node_name = node['name']
-    node_inputs = node['input']     #there might be more than one input
-    node_output = node['output'][0]
-    node_op_type = node['opType']
-
-    #Calculate FLOPS differently based on the OperationType
-    if (node_op_type == "Clip" or 
-        node_op_type == "Relu" or 
-        node_op_type == "LeakyRelu" or
-        node_op_type == "Sigmoid" or
-        node_op_type == "Tanh" or
-        node_op_type == "BatchNormalization"):
-      #FLOPS = 3+Cout (for forward pass)
-
-      #Get Cout,Hout,Wout dimensions - ONNX handle internal tensors in Channel Firstformat, which is a (N,C,H,W)
-      for info in onnx_json['graph']['valueInfo']:
-        #Get the valueInfo instance that corresponds with the current node
-        if info['name'] == node_output:
-          Cout = int(info['type']['tensorType']['shape']['dim'][1]['dimValue'])
-
-          #Calc FLOPS
-          dictNodeFLOPS[node_name] = 3*Cout
-          break
-    elif node_op_type == "Conv":
-      #FLOPS = Hf*Wf*Cin*Cout (for forward pass)
-      Hf,Wf,Cin,Cout = 1,1,1,1#default
-
-      #Get KernelShape (here we can also get the pads, strides, ecc)
-      for attr in node['attribute']:
-        if attr['name'] == 'kernel_shape':
-          Hf = int(attr['ints'][0])
-          Wf = int(attr['ints'][1])
-          break
-
-      #Get Cin,Hin,Win dimensions - ONNX handle internal tensors in Channel Firstformat, which is a (N,C,H,W)
-      for info in onnx_json['graph']['valueInfo']:
-        #Check for each node input if it corresponds with a valueInfo instance
-        #That way we are basically searching for the output info of the node that is at the input of the current node
-        for input in node_inputs:
-          if info['name'] == input:
-            Cin = int(info['type']['tensorType']['shape']['dim'][1]['dimValue'])
-            break
-
-      #Get Cout,Hout,Wout dimensions - ONNX handle internal tensors in Channel Firstformat, which is a (N,C,H,W)
-      for info in onnx_json['graph']['valueInfo']:
-        #Get the valueInfo instance that corresponds with the current node
-        if info['name'] == node_output:
-          Cout = int(info['type']['tensorType']['shape']['dim'][1]['dimValue'])
-          break
-
-      #Calc FLOPS
-      dictNodeFLOPS[node_name] = Hf*Wf*Cin*Cout
-    elif (node_op_type == "MaxPool" or 
-          node_op_type == "LpPool" or 
-          node_op_type == "AveragePool" or
-          node_op_type == "GlobalMaxPool" or 
-          node_op_type == "GlobalAveragePool"):
-      #FLOPS = Hf*Wf*Cout (for forward pass)
-      Hf,Wf,Cout = 1,1,1#default
-
-      #Get KernelShape (here we can also get the pads, strides, ecc)
-      if 'attribute' in node:
-        for attr in node['attribute']:
-          if attr['name'] == 'kernel_shape':
-            Hf = int(attr['ints'][0])
-            Wf = int(attr['ints'][1])
-            break
-      else:
-        #No attribute in node, we get the kernel dimentions from the previous node
-        for info in onnx_json['graph']['valueInfo']:
-          #Check for each node input if it corresponds with a valueInfo instance
-          #That way we are basically searching for the output info of the node that is at the input of the current node
-          for input in node_inputs:
-            if info['name'] == input:
-              Hf = int(info['type']['tensorType']['shape']['dim'][2]['dimValue']) #only in this case Hf=Hin
-              Wf = int(info['type']['tensorType']['shape']['dim'][3]['dimValue']) #only in this case Wf=Win
-              break
-
-      #Get Cout,Hout,Wout dimensions - ONNX handle internal tensors in Channel Firstformat, which is a (N,C,H,W)
-      for info in onnx_json['graph']['valueInfo']:
-        #Get the valueInfo instance that corresponds with the current node
-        if info['name'] == node_output:
-          Cout = int(info['type']['tensorType']['shape']['dim'][1]['dimValue'])
-          break
-
-      #Calc FLOPS
-      dictNodeFLOPS[node_name] = Hf*Wf*Cout
-    elif (node_op_type == "BatchNormalization" or 
-          node_op_type == "LpNormalization"):
-      #FLOPS = 5*Cout + Cn - 2 (for forward pass)
-      Cout, Cn = 1,1  #default
-
-      #Get Cout,Hout,Wout dimensions - ONNX handle internal tensors in Channel Firstformat, which is a (N,C,H,W)
-      for info in onnx_json['graph']['valueInfo']:
-        #Get the valueInfo instance that corresponds with the current node
-        if info['name'] == node_output:
-          Cout = int(info['type']['tensorType']['shape']['dim'][1]['dimValue'])
-          if 'dimValue' in info['type']['tensorType']['shape']['dim'][0]:
-            Cn = info['type']['tensorType']['shape']['dim'][0]['dimValue']    #TODO: try dimValue first and if it's not working then dimParam
-          else:
-            Cn = info['type']['tensorType']['shape']['dim'][0]['dimParam']
-
-          if Cn.startswith("unk_"):
-            Cn = batchSize    #Use the dimension of the batch used to run the RUN ALL comand instead of 1
-          else:
-            Cn = int(Cn)
-          break
-
-      #Calc FLOPS
-      dictNodeFLOPS[node_name] = 5*Cout + Cn - 2
-    elif (node_op_type == "SoftmaxCrossEntropyLoss" or 
-          node_op_type == "NegativeLogLikelihoodLoss"):
-      #FLOPS = 4*Cout - 1 (for forward pass)
-      Cout, Cn = 1,1,1  #default
-
-      #Get Cout,Hout,Wout dimensions - ONNX handle internal tensors in Channel Firstformat, which is a (N,C,H,W)
-      for info in onnx_json['graph']['valueInfo']:
-        #Get the valueInfo instance that corresponds with the current node
-        if info['name'] == node_output:
-          Cout = int(info['type']['tensorType']['shape']['dim'][1]['dimValue'])
-          break
-
-      #Calc FLOPS
-      dictNodeFLOPS[node_name] = 4*Cout - 1
-    #MatMul
-    elif (node_op_type == "MatMul"): #or node_op_type == "FC"
-      #FLOPS = Hin*Win*Cin*Cout (for forward pass)
-      Hin,Win,Cin,Cout = 1,1,1,1#default
-
-      #Get Cin,Hin,Win dimensions - ONNX handle internal tensors in Channel Firstformat, which is a (N,C,H,W)
-      for info in onnx_json['graph']['valueInfo']:
-        #Check for each node input if it corresponds with a valueInfo instance
-        #That way we are basically searching for the output info of the node that is at the input of the current node
-        for input in node_inputs:
-          if info['name'] == input:
-            Cin = int(info['type']['tensorType']['shape']['dim'][1]['dimValue'])
-            if len(info['type']['tensorType']['shape']['dim']) == 4:
-              Hin = int(info['type']['tensorType']['shape']['dim'][2]['dimValue'])
-              Win = int(info['type']['tensorType']['shape']['dim'][3]['dimValue'])
-            break
-
-      #Get Cout,Hout,Wout dimensions - ONNX handle internal tensors in Channel Firstformat, which is a (N,C,H,W)
-      for info in onnx_json['graph']['valueInfo']:
-        #Get the valueInfo instance that corresponds with the current node
-        if info['name'] == node_output:
-          Cout = int(info['type']['tensorType']['shape']['dim'][1]['dimValue'])
-          break
-
-      #Calc FLOPS
-      dictNodeFLOPS[node_name] = Hin*Win*Cin*Cout
-    #Add          
-    elif (node_op_type == "Add" or 
-          node_op_type == "Mul" or
-          node_op_type == "Div" or
-          node_op_type == "Sub"):
-      #FLOPS = Hout*Wout*Cout (for forward pass)
-      Hout,Wout,Cout = 1,1,1#default
-
-      #Get Cout,Hout,Wout dimensions - ONNX handle internal tensors in Channel Firstformat, which is a (N,C,H,W)
-      for info in onnx_json['graph']['valueInfo']:
-        #Get the valueInfo instance that corresponds with the current node
-        if info['name'] == node_output:
-          Cout = int(info['type']['tensorType']['shape']['dim'][1]['dimValue'])
-          Hout = int(info['type']['tensorType']['shape']['dim'][2]['dimValue'])
-          Wout = int(info['type']['tensorType']['shape']['dim'][3]['dimValue'])
-          break
-
-      #Calc FLOPS
-      dictNodeFLOPS[node_name] = Hout*Wout*Cout
-    else:
-      print("WARNING! This type of Opeartion hasn't been recognized by the FLOPS calcultion algorithm! Please add support for: " + node_op_type)
-      jsonFile = open(node_op_type+".json", "w")
-      jsonString = json.dumps(onnx_json)
-      jsonFile.write(jsonString)
-      jsonFile.close()
-
-  return dictNodeFLOPS
-
-def onnx_import_data(image_file, image_batch, img_size_x, img_size_y, is_grayscale = False):
-  '''
-  Import Data (Images) - Imports the Image or Image Batch, turns it into an np array and saves ot
-  on a pickle file that can be later used as input by onnx_first_inference.py
-
+  :param onnx_file: the full unsplitted ONNX file (used to gather usefull information)
+  :param onnx_path: the path to the collection of models were to find the correct one to use for the inference
   :param image_file: the path to the image if using a single image
   :param image_batch: the path to the folder containing the batch of images if using a batch
   :param img_size_x: the horrizontal size of the images
   :param img_size_y: the vertical size of the images
   :param is_grayscale: true if the image is grayscale, false otherwise
+  :param minio_bucket: MinIO Bucket where the input and output files used by OSCAR must be placed
+  :param oscar_service: the name of the OSCAR Service to use when we create a new job to run the second inference
+  :param kube_namespace: the namespace in Kubernetes used for the OSCAR Service
+  :param repetition: specifies the number of repetitions to execute
+  :param exec_provider: the Execution Provider used at inference (CPU (default) | GPU | OpenVINO | TensorRT | ACL)
+  :param device: specifies the device type such as 'CPU_FP32', 'GPU_FP32', 'GPU_FP16', etc..
+  :param platform: the platform where the script is executed, in order to use the right client for MinIO, OSCAR and Kubernetes
   '''
-  array = data_processing(image_file, image_batch, img_size_x, img_size_y, is_grayscale)
-  data = {
-    "inputData": array,
-  }
-  
-  # Save the array on a pickle file
-  with open(INPUT_PICKLE_FILE, 'wb') as f:
-    pickle.dump(data, f)
+  #Default Argument Values
+  if minio_bucket == None: minio_bucket = "onnx-test-mobilenet"  
+  if oscar_service == None: oscar_service = "onnx-test-mobilenet"
+  if kube_namespace == None: kube_namespace = "oscar-svc"
+  if is_grayscale == None: is_grayscale = False
+  if platform == None: platform = "AMD64"
+  if repetitions == None: repetitions = 1
 
-def data_processing(image_file, image_batch, img_size_x, img_size_y, is_grayscale = False, input_tensor = None):
-  '''
-  Input Data Proproccessing - Imports the Image or Image Batch and turns it into an np array
+  #Load the Onnx Model
+  model_onnx = load_onnx_model(onnx_file)
 
-  :param image_file: the path to the image if using a single image
-  :param image_batch: the path to the folder containing the batch of images if using a batch
-  :param img_size_x: the horrizontal size of the images
-  :param img_size_y: the vertical size of the images
-  :param is_grayscale: true if the image is grayscale, false otherwise
-  :returns: the np array of the image or batch of images
-  '''
-  # Import the single Image
-  if image_file != None:
-    # Load an image from file
-    image = load_img(image_file, target_size=(img_size_x, img_size_y), grayscale=is_grayscale)
+  # Process input data (image or batch of images)
+  inputData = data_processing(image_file, image_batch, img_size_x, img_size_y, is_grayscale, model_onnx.graph.input[0])
+  batchSize = inputData[0]
 
-    # convert the image pixels to a numpy array
-    image = img_to_array(image)
+  # Run the model on Edge
+  # Process and get the ProfiligTable by running at inference the full model (A WARMUP execution is also performed before)
+  print("Warmup inference (Edge)..")
+  resData, _ = onnx_run_first_half(onnx_file, inputData, True, exec_provider, device_type, profiling=True, xml_file=xml_file)
+  print("Run the inference of the whole layer locally (Edge)..")
+  resDataEdge, profilingTableEdge = onnx_run_first_half(onnx_file, inputData, True, exec_provider, device_type, profiling=True, xml_file=xml_file)
+  print("Finished inference of the whole layer locally (Edge)!")
+  profilingTableCloud = None
 
-    #Get the input's tensor shape first
-    if input_tensor != None:
-      input_tensor_shape = [list(input_tensor.type.tensor_type.shape.dim)[0].dim_value,
-                            list(input_tensor.type.tensor_type.shape.dim)[1].dim_value,
-                            list(input_tensor.type.tensor_type.shape.dim)[2].dim_value,
-                            list(input_tensor.type.tensor_type.shape.dim)[3].dim_value]
-    else:
-      input_tensor_shape = [1,img_size_x,img_size_y,3]
-    #input_tensor_shape = [1,3,img_size_x,img_size_y]    #test force another tensor shape
 
-    #Reshape the Image based on the input's tensor shape
-    if input_tensor_shape[3] == 3:
-      print("Image of shape: (1,x,y,3)")
 
-      # reshape data for the model
-      image = image.reshape((1, image.shape[0], image.shape[1], image.shape[2]))
-    elif input_tensor_shape[1] == 3:
-      print("Image of shape: (1,3,y,x)")
 
-      # reshape data for the model
-      image = image.reshape((1, image.shape[2], image.shape[1], image.shape[0]))
-    else:
-      print("Default Image shape: (1,x,y,3)")
+  #######################TEST###################################
+  #Get the list of all the layers we need (the ones that are used for making the splits)
+  splitNodes = []
+  splitNodesCompatibility = []    #for OLD onnxruntime versions, we need the names of the nodes to be saved differently (attribute name instead of output from the onnx graph)
+  for layer, lnode in enumerate_model_node_outputs(model_onnx, add_node = True):
+    #Ignore the first and the last layer
+    if layer != list(enumerate_model_node_outputs(model_onnx))[0] and layer != list(enumerate_model_node_outputs(model_onnx))[-1]:
+      splitLayer = layer.replace("/", '-').replace(":", '_')
+      print("Search for: " + splitLayer)
+      for dir in os.listdir(onnx_path):
+        if dir.find("_on_") > 0:
+          index = dir.index('_on_')
+          d = dir[index+4:]
+          #print("Check: " + d)
+          if d == splitLayer:
+            print("Found Layer: " + d)
+            splitNodes.append(layer)
+            splitNodesCompatibility.append(lnode.name)
 
-      # reshape data for the model
-      image = image.reshape((1, image.shape[0], image.shape[1], image.shape[2]))
+  dictSingleLayerInfProfilingEdge = getSingleLayerExecutionTimeTable(model_onnx, splitNodes, profilingTableEdge)
+  ####################################################################################################################
 
-    # prepare the image for the model
-    #image = preprocess_input(image)
-    input = np.array(image).astype(np.float32)  # Note the extra brackets to create 1x10
-    input_img = np.array(image).astype(np.float32)  # Note the extra brackets to create 1x10
-    print(image.shape) 
-    return input_img   
-  # Import the Batch of Images
-  elif image_batch != None:
-    i = 0
-    list_img = []
-    for img_name in os.listdir(image_batch):
-      #print(img_name)
-      new_img = load_img(image_batch+'/'+img_name, target_size=(img_size_x, img_size_y), grayscale=is_grayscale)
-      new_img = img_to_array(new_img)
-      new_img = new_img.reshape((1, new_img.shape[0], new_img.shape[1], new_img.shape[2]))
-      list_img.append(new_img)
-      i = i + 1
+  #Execute at inference the whole model on the Cloud (OSCAR)
+  try:
+    (t_1st_inf, t_2nd_inf, t_oscar_job, t_kube_pod, tensor_lenght, 
+     t_tensor_save, t_tensor_load, t_networking, profilingTableCloud) = onnx_run_complete(onnx_file,  #it should be onnx_path, but since we skip the local execution and don't use splits, we pass the full model
+                                                                                        "PROFILING", 
+                                                                                        image_file, 
+                                                                                        image_batch, 
+                                                                                        img_size_x, 
+                                                                                        img_size_y, 
+                                                                                        is_grayscale,
+                                                                                        minio_bucket,
+                                                                                        oscar_service,
+                                                                                        kube_namespace,
+                                                                                        platform,
+                                                                                        exec_provider,
+                                                                                        device_type,
+                                                                                        xml_file=None) 
+  except Exception as e:
+    print("Error on executin RUN Complete(Profiling) cycle: " + str(e))  
+  finally:
+    print("Finished inference (with Profiling) of the whole layer on the Cloud (OSCAR)..")
 
-    tuple_img = tuple(list_img)
-    batch_img = np.vstack(tuple_img)
-    print(batch_img.shape)
-    return batch_img
+  #Get the list of all the layers we need (the ones that are used for making the splits)
+  splitNodes = []
+  splitNodesCompatibility = []    #for OLD onnxruntime versions, we need the names of the nodes to be saved differently (attribute name instead of output from the onnx graph)
+  for layer, lnode in enumerate_model_node_outputs(model_onnx, add_node = True):
+    #Ignore the first and the last layer
+    if layer != list(enumerate_model_node_outputs(model_onnx))[0] and layer != list(enumerate_model_node_outputs(model_onnx))[-1]:
+      splitLayer = layer.replace("/", '-').replace(":", '_')
+      print("Search for: " + splitLayer)
+      for dir in os.listdir(onnx_path):
+        if dir.find("_on_") > 0:
+          index = dir.index('_on_')
+          d = dir[index+4:]
+          #print("Check: " + d)
+          if d == splitLayer:
+            print("Found Layer: " + d)
+            splitNodes.append(layer)
+            splitNodesCompatibility.append(lnode.name)
+
+  # Get the Inference Time of each layer (it can be also a sequence of nodes) by analyzing the profiling Table - Edge & Cloud
+  if version.parse(onnxruntime.__version__) < version.parse("1.10.0"):
+    #for old onnxruntime versions, we need different names
+    dictSingleLayerInfProfilingEdge = getSingleLayerExecutionTimeTable(model_onnx, splitNodesCompatibility, profilingTableEdge)
+    #update keys with the node names that we need
+    for i in range(len(splitNodes)):
+      dictSingleLayerInfProfilingEdge[splitNodes[i]] = dictSingleLayerInfProfilingEdge[splitNodesCompatibility[i]]
+      del dictSingleLayerInfProfilingEdge[splitNodesCompatibility[i]]
   else:
-    return None
+    dictSingleLayerInfProfilingEdge = getSingleLayerExecutionTimeTable(model_onnx, splitNodes, profilingTableEdge)
+  dictSingleLayerInfProfilingCloud = getSingleLayerExecutionTimeTable(model_onnx, splitNodes, profilingTableCloud)
+      
+  #Iterate through inputs of the graph and get operation types
+  dictOperations = {}
+  for node in model_onnx.graph.node:
+    name = node.output[0]
+    op_type = node.op_type
+    if name in splitNodes:
+      # Get OperationType
+      dictOperations[name] = op_type 
 
-def plot_results(results_file):
+  #get output tensor at each layer:
+  #https://github.com/microsoft/onnxruntime/issues/1455
+
+  # add all intermediate outputs to onnx net
+  ort_session = onnxruntime.InferenceSession(onnx_file)
+  org_outputs = [x.name for x in ort_session.get_outputs()]
+
+  model = onnx.load(onnx_file)
+  for node in model.graph.node:
+      for output in node.output:
+          if output not in org_outputs:
+              model.graph.output.extend([onnx.ValueInfoProto(name=output)])
+
+  # excute onnx
+  ort_session = onnxruntime.InferenceSession(model.SerializeToString())
+  outputs = [x.name for x in ort_session.get_outputs()]
+  #in_img = np.fromfile('<you path>/input_img.raw', dtype=np.float32).reshape(1,3,511,511)
+  inputs = onnx_get_true_inputs(model_onnx)
+  ort_outs = ort_session.run(outputs, {str(inputs[0]): inputData} )        
+  from collections import OrderedDict
+  ort_outs = OrderedDict(zip(outputs, ort_outs))
+
+  dictTensorLength = {}
+  dictNrFilters = {}
+  for layer in splitNodes:
+    shape = ort_outs[layer].shape
+    if len(shape) == 4:
+      dictTensorLength[layer] = shape[0]*shape[1]*shape[2]*shape[3]
+    else:
+      dictTensorLength[layer] = shape[0]*shape[1]
+    dictNrFilters[layer] = shape[1]
+
+    
+  #Now we split the layer in single blocks and run them individually in order to get the inference time per layer
+  onnx_model_split_all_singlenode(onnx_file, splitNodes)     #TODO: we can also get all the info without splitting perhaps
+
+  #Run at inference all the single layer models generated and get the inference execution time and the Nr. of Parameters
+  #Acquire Nr. of Parameters and FLOPS per each layer in the
+  dictNrParams = {}
+  dictFLOPS = {}
+  for layer in splitNodes:
+    #Ignore the first layer since it will be the input
+    if True: #layer != list(dictTensors.keys())[0]:
+      file = "SingleLayerSplits/"+layer.replace("/", '-').replace(":", '_')+'.onnx'
+
+      if os.path.exists(file):
+        #Get the Nr. of Parameters
+        single_layer_model_onnx = load_onnx_model(file)
+        params = calculate_params(single_layer_model_onnx)
+        dictNrParams[layer] = params
+        #print('Number of params:', params)
+
+        #For every model calc FLOPS
+        '''onnx_json = convert(
+          onnx_graph=single_layer_model_onnx.graph,
+        )'''
+        onnx_json = convert(
+          input_onnx_file_path=file,
+          output_json_path="test.json",
+          json_indent=2,
+        )
+        dictNodeFLOPS = calc_flops(onnx_json, batchSize)
+
+        #Sum all the FLOPS of the nodes inside the Single Layer Model
+        dictFLOPS[layer] = 0
+        for node in dictNodeFLOPS:
+          dictFLOPS[layer] = dictFLOPS[layer] + dictNodeFLOPS[node]
+        print(file + " FLOPS: " + str(dictFLOPS[layer]))
+
+  #Open an cvs file to save the results
+  with open(PROFILER_RESULTS_CSV_FILE, 'w', newline='') as csvfile:
+    fieldnames = ['SplitLayer', 'TensorLength', 'OpType', 'NrParameters', 'NrFilters', 'FLOPS', "LayerInfTimeEdge", "LayerInfTimeCloud"]
+    cvswriter = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    cvswriter.writeheader()
+
+    for layer in splitNodes: 
+      cvswriter.writerow({"SplitLayer":layer.replace("/", '-').replace(":", '_'), "TensorLength":dictTensorLength[layer], "OpType":dictOperations[layer], 
+                          "NrParameters":dictNrParams[layer], "NrFilters":dictNrFilters[layer], "FLOPS":dictFLOPS[layer],
+                          "LayerInfTimeEdge": dictSingleLayerInfProfilingEdge[layer], "LayerInfTimeCloud": dictSingleLayerInfProfilingCloud[layer]})
+
+
+def getSingleLayerExecutionTimeTable(model_onnx, splitNodes, profilingTable):
   '''
-  Plots the results of the Inference Cycle that are saved on a CSV file (only the first cycle if there are multiple repetitions)
-  ResultsFile - FieldNames:'SplitLayer', '1stInfTime', '2ndInfTime', 'oscarJobTime', 'kubePodTime', 'tensorSaveTime', 'tensorLoadTime', 'tensorLenght'
-
-  :param results_file: the path to the CSV file where the results are saved
+  Get a Dictionary with the SingleLayersInference Time values (for each layer we have splitted the main model) based on the 
+  data we got from onnxruntime Profiling of the whole onnx model.
+  
+  :param model_onnx: the imported full onnx model
+  :param splitNodes: the list of all the layers we have splitted the main model
+  :param profilingTable: the Profiling Table
+  :returns: a dictionary with the split layers names as keys and inference time calculated as value
   '''
-  N = 0
-  xTicks = []
-  data_inf1_oscar_job = []
-  data_inf1_inf2 = []
-  data_inf1_kube_pod = []
-  with open(results_file, 'r') as csv_file:
-    csv_reader = csv.reader(csv_file, delimiter=',') 
-    for row in csv_reader:
-      if not N == 0:
-        # Discard repetitions
-        if row[0] == 'SplitLayer':  
-          break
-        #print(f'\t{row[0]},  {row[1]}, {row[2]}, {row[3]}, {row[4]}.')
-        xTicks.append(row[0])
-        t_1st_inf = np.float(row[1])
-        t_2nd_inf = np.float(row[2])
-        t_oscar_job = np.float(row[3])
-        t_kube_pod = np.float(row[4])
-        t_tensor_save = np.float(row[5])
-        t_tensor_load = np.float(row[6])
-        tensor_lenght = np.float(row[7])
-        t_networking = np.float(row[6])
-        data_inf1_oscar_job.append([t_1st_inf, t_networking, t_oscar_job])
-        data_inf1_inf2.append([t_1st_inf, t_tensor_save, t_networking, t_2nd_inf, t_tensor_load])
-        data_inf1_kube_pod.append([t_1st_inf, t_networking, t_kube_pod])
-      N += 1
+  dictSingleLayerInfProfiling = {}
+  dictTensorLengths = {}
+  prevNode = ""
 
-  print(data_inf1_oscar_job)
-  # t_1st_inf = 1st Inference Execution Time
-  # t_2nd_inf = 2nd Inference Execution Time
-  # t_oscar_job = 2nd Inf. OSCAR JOB Exec. Time
-  # t_kube_pod = 2nd Inf. Kubernets POD Exec. Time
-  # tensor_lenght = 1st Inf. Tensor Lenght:
-  # t_tensor_save = 1st Inf. Tensor Save Time
-  # t_tensor_load = 2nd Inf. Tensor Load Time
+  #Iterate through the nodes where we have splitted the model
+  for node in splitNodes:
+    closestNode = getClosestNodeInProfilingTable(model_onnx, profilingTable, node)
+    if closestNode != "":
+      print(closestNode)
+      #Get SingleLayerInference time
+      dictSingleLayerInfProfiling[node] = getInfTimeBetweenNodes(profilingTable, prevNode, closestNode)/1000000
 
-  print("Plot the first graph where we consider also the cluster execution time..")
-  # Dummy dataframe
-  df = pd.DataFrame(data=data_inf1_oscar_job, columns=['1st Exec Time', 'Networking Time', '2nd Exec Time(OSCAR JOB)'])
+      prevNode = closestNode
+    else:
+      dictSingleLayerInfProfiling[node] = 0
+  
+  return dictSingleLayerInfProfiling
 
-  # Plot a stacked barchart
-  ax = df.plot.bar(stacked=True)
-
-  # Place the legend
-  ax.legend(bbox_to_anchor=(1.1, 1.05))
-  plt.xticks(ticks=range(0,N-1), labels=xTicks, rotation=90)
-  #plt.ylim(0, 100)
-  plt.title('Execution time by layer divided between Edge and Cloud (considering cluster execution time)')
-  plt.xlabel('Layer')
-  plt.ylabel('Time (sec)')
-  plt.show()
-
-  print("Plot the second graph where we consider also the kubernetes pod execution time..")
-  # Dummy dataframe
-  df = pd.DataFrame(data=data_inf1_kube_pod, columns=['1st Exec Time', 'Networking Time', '2nd Exec Time(Kubernetes POD)'])
-
-  # Plot a stacked barchart
-  ax = df.plot.bar(stacked=True)
-
-  # Place the legend
-  ax.legend(bbox_to_anchor=(1.1, 1.05))
-  plt.xticks(ticks=range(0,N-1), labels=xTicks, rotation=90)
-  #plt.ylim(0, 100)
-  plt.title('Execution time by layer divided between Edge and Cloud (considering pod execution time)')
-  plt.xlabel('Layer')
-  plt.ylabel('Time (sec)')
-  plt.show()
-
-  print("Plot the third graph where we don't consider the cluster execution time..")
-  # Dummy dataframe
-  df = pd.DataFrame(data=data_inf1_inf2, columns=['1st Inf Exec Time', 'TensorSave Time', 'Networking Time', '2nd Exec Time', 'TensorLoad Time'])
-
-  # Plot a stacked barchart
-  ax = df.plot.bar(stacked=True)
-
-  # Place the legend
-  ax.legend(bbox_to_anchor=(1.1, 1.05))
-  plt.xticks(ticks=range(0,N-1), labels=xTicks, rotation=90)
-  #plt.ylim(0, 100)
-  plt.title('Execution time by layer divided between Edge and Cloud')
-  plt.xlabel('Layer')
-  plt.ylabel('Time (sec)')
-  plt.show()
-
-def onnx_show_graph(onnx_file):
+def getNextNode(model_onnx, currentNode):
   '''
-  Show/Print an ONNX Model's Graph with Neutron (https://github.com/lutzroeder/netron)
-
-  :param onnx_file: the ONNX file to split (it can also be an already splitted model)
+  Get the name of the node that comes immediatly after the one passed as function argument.
+  
+  :param model_onnx: the imported full onnx model
+  :param currentNode: the node we consider from the model
+  :returns: the name next node
   '''
-  #Graph the ONNX File with Neutron
-  #res = os.popen(NEUTRON_INSTALLATION_PATH + " " + onnx_file, 'r').read()
-  #pipe = os.popen(NEUTRON_INSTALLATION_PATH + " " + onnx_file, 'r', 100) 	
-  res = os.system("/snap/bin/netron " + onnx_file)
-  if res != 0:
-    print("\n\nNeutron is NOT INSTALLED or installed in the wrong place.")
-    print("Please install it in the following path: " + NEUTRON_INSTALLATION_PATH)
-    print("Docs: https://github.com/lutzroeder/netron")
-    print("\n\n")
+  prevNode = ""
+  for n in model_onnx.graph.node:
+    node = n.output[0]
+    if prevNode == currentNode:
+      return node
+
+    prevNode = node
+  return ""
+
+def isNodeInProfilingTable(profilingTable, node):
+  '''
+  Get the closest Node in the Profiling Table to the node specified (which is one of the nodes used for slitting the model)
+  
+  :param profilingTable: the Profiling Table
+  :param nodes: a node of the model
+  :returns: True if the node is present, False otherwise
+  '''
+  for i in range(0, len(profilingTable)):
+      #if reatched the destination node
+      if node in profilingTable[i]["name"]:
+        return True
+      # for older versions of onnxruntime
+      elif ":0" in node:
+          if node[:-2] in profilingTable[i]["name"]:
+            return True
+  return False
+
+def getClosestNodeInProfilingTable(model_onnx, profilingTable, node):
+  '''
+  Get the closest Node in the Profiling Table to the node specified (which is one of the nodes used for slitting the model).
+  This research will only search two nodes deep!
+  
+  :param model_onnx: the imported full onnx model
+  :param profilingTable: the Profiling Table
+  :param nodes: one of the nodes used for slitting the model
+  :returns: the name of the closest node in the ProfilingTable
+  '''
+  #is the node already present in the profiling table?
+  if isNodeInProfilingTable(profilingTable, node):
+    return node
+  else:
+    #try the next node in the model
+    nextNode = getNextNode(model_onnx, node)
+    if nextNode != "":
+      if isNodeInProfilingTable(profilingTable, nextNode):
+        return nextNode
+      else:
+        #try the next next node in the model
+        nextNextNode = getNextNode(model_onnx, nextNode)
+        if nextNextNode != "":
+          if isNodeInProfilingTable(profilingTable, nextNextNode):
+            return nextNextNode
+  return ""
+
+def getInfTimeBetweenNodes(profilingTable, startNode, endNode):
+  '''
+  Get the sum of inference time values from a starting node to an ending node (excluded) from the profiling table.
+  If the starting node is the empty string, then start from the beging with the first node in the ProfilingTable.
+  
+  :param profilingTable: the Profiling Table
+  :param startNode: the staring node considered
+  :param endNode: the last node considered (excluded)
+  :returns: the inference time value in micro seconds
+  '''
+  infTime = 0
+
+  #from the begining
+  if startNode == "":
+    for i in range(2, len(profilingTable)):     #ignore the first two, beacuse they are session instances instead of code node execution
+      #if reatched the destination node
+      if endNode in profilingTable[i]["name"]:
+        return infTime
+      else:
+        infTime = infTime + profilingTable[i]["dur"]
+  else:
+    startIndex = 0
+    #find starting index
+    for i in range(0, len(profilingTable)):
+      #if reatched the destination node
+      if startNode in profilingTable[i]["name"]:
+        startIndex = i
+        break
+
+    for i in range(startIndex, len(profilingTable)):
+      #if reatched the destination node
+      if endNode in profilingTable[i]["name"]:
+        return infTime
+      else:
+        infTime = infTime + profilingTable[i]["dur"]
+
+  return 0
 
 if __name__ == "__main__":
     main()

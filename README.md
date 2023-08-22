@@ -1,4 +1,4 @@
-# ONNX Splitter
+# DNN ONNX Profiler: A tool for the performance profiling and prediction of partitioned Deep Neural Networks in Computing Continua Environments
 
 ## 1) Introduction
 
